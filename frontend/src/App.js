@@ -1,14 +1,24 @@
-import React from 'react';
-import Register from './RegisterAndLogin/Register';
+import React, { useState } from 'react';
 import Login from './RegisterAndLogin/Login';
+import Register from './RegisterAndLogin/Register';
 
-function App() {
+const App = () => {
+  const [isLoginView, setIsLoginView] = useState(true);
+
+
+  const toggleView = () => {
+    setIsLoginView(!isLoginView);
+  };
+
   return (
     <div>
-      <Register />
-      <Login />
+      {isLoginView ? (
+        <Login onRegisterClick={toggleView} />
+      ) : (
+        <Register onRegisterClick={toggleView} />
+      )}
     </div>
   );
-}
+};
 
 export default App;

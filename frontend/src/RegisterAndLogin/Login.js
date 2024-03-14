@@ -1,49 +1,46 @@
 import React, { useState } from 'react';
+import './LoginPage.css';
 
-function Login() {
-    const [loginInfo, setLoginInfo] = useState({
-        username: '',
-        password: '',
-    });
+const Login = ({ onRegisterClick }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setLoginInfo((prevLoginInfo) => ({
-            ...prevLoginInfo,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // apppppppiapiapdf
-        console.log('Login Info:', loginInfo);
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        //api and checking part
+        console.log('Login with:', email, password);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Login</h2>
-            <div>
-                <label>Username:</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={loginInfo.username}
-                    onChange={handleChange}
-                />
+        <div className="login-container">
+            <div className="login-card">
+                <h2>Login to your account</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="input-group">
+                        <input
+                            type="email"
+                            placeholder="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            placeholder="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <button type="submit">Login your account</button>
+                    <p className="or">OR</p>
+                    <button type="button" onClick={onRegisterClick}>
+                        Create new account
+                    </button>
+                </form>
             </div>
-            <div>
-                <label>Password:</label>
-                <input
-                    type="password"
-                    name="password"
-                    value={loginInfo.password}
-                    onChange={handleChange}
-                />
-            </div>
-            <button type="submit">Login</button>
-        </form>
+        </div>
     );
-}
+};
 
 export default Login;

@@ -1,59 +1,59 @@
 import React, { useState } from 'react';
+import './RegisterPage.css';
 
-function Register() {
-    const [userInfo, setUserInfo] = useState({
-        username: '',
-        email: '',
-        password: '',
-    });
+const Register = ({ onRegisterClick }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUserInfo((prevUserInfo) => ({
-            ...prevUserInfo,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // APIAPIAPI
-        console.log('User Info:', userInfo);
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+        // api and checking
+        console.log('Register with:', email, password);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Register</h2>
-            <div>
-                <label>Username:</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={userInfo.username}
-                    onChange={handleChange}
-                />
+        <div className="register-container">
+            <div className="register-card">
+                <h2>Create new account</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="input-group">
+                        <input
+                            type="email"
+                            placeholder="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            placeholder="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            placeholder="confirm password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                    </div>
+                    <button type="submit">Register account</button>
+                    <p className="or">OR</p>
+                    <button type="button" onClick={onRegisterClick}>
+                        Back to Login
+                    </button>
+                </form>
             </div>
-            <div>
-                <label>Email:</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={userInfo.email}
-                    onChange={handleChange}
-                />
-            </div>
-            <div>
-                <label>Password:</label>
-                <input
-                    type="password"
-                    name="password"
-                    value={userInfo.password}
-                    onChange={handleChange}
-                />
-            </div>
-            <button type="submit">Register</button>
-        </form>
+        </div>
     );
-}
+};
 
 export default Register;
