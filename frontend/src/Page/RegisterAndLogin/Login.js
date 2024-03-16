@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
-import { signIn } from '../Cognito/CognitoAuth';
+import { signIn } from '../../Cognito/CognitoAuth';
 import { useNavigate } from 'react-router-dom';
-import Tooltip from '../Components/Tooltip/Tooltip';
-import Notification from '../Components/Notification/Notification';
+import Tooltip from '../../Components/Tooltip/Tooltip';
+import Notification from '../../Components/Notification/Notification';
 const Login = ({ onRegisterClick, onLoginFailure }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

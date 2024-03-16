@@ -1,7 +1,7 @@
 import React from 'react';
-import './DashboardPage.css';
+import './MyWatchList.css';
 
-const Dashboard = () => {
+const MyWatchList = () => {
     const stockData = [{
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
@@ -33,7 +33,7 @@ const Dashboard = () => {
     },];
 
     return (
-        <div className="dashboard-container">
+        <div className="my-watch-list-container">
 
             <table className="stocks-table">
                 <thead>
@@ -72,4 +72,4 @@ const Dashboard = () => {
 };
 
 
-export default Dashboard;
+export default MyWatchList;

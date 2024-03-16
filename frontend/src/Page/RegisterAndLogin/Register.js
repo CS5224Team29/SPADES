@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { signUp } from '../Cognito/CognitoAuth';
+import { signUp } from '../../Cognito/CognitoAuth';
 import { useNavigate } from 'react-router-dom';
-import Tooltip from '../Components/Tooltip/Tooltip';
+import Tooltip from '../../Components/Tooltip/Tooltip';
 import './RegisterPage.css';
-import Notification from '../Components/Notification/Notification';
+import Notification from '../../Components/Notification/Notification';
 
 const Register = ({ onRegisterClick }) => {
     const [email, setEmail] = useState('');

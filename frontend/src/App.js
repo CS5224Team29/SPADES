@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Login from './RegisterAndLogin/Login';
-import Register from './RegisterAndLogin/Register';
+import Login from './Page/RegisterAndLogin/Register';
+import Register from './Page/RegisterAndLogin/Register';
 
 const App = () => {
   const [isLoginView, setIsLoginView] = useState(true);

@@ -1,0 +1,54 @@
+.my-watch-list-container {
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f8f8;
+}
+
+.tabs span {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.tabs .active {
+    font-weight: bold;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.stocks-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stocks-table th,
+.stocks-table td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.stocks-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.stocks-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.stocks-table button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
