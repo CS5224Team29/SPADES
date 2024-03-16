@@ -1,8 +1,21 @@
-import React from 'react';
-import './DashboardPage.css';
+import React, { useState } from 'react';
+import { Box, Button, Drawer, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import CustomTable from '../../Components/CustomTable/CustomTable';
 
 const Dashboard = () => {
-    const stockData = [{
+    const columns = [
+        { id: 'shortName', label: 'Name' },
+        { id: 'symbol', label: 'Symbol' },
+        { id: 'close_price', label: 'Last' },
+        { id: 'change', label: 'Chg' },
+        { id: 'change_percentage', label: '% Chg' },
+        { id: 'open_price', label: 'Open' },
+        { id: 'high', label: 'High' },
+        { id: 'low', label: 'Low' },
+        { id: 'volume', label: 'Volume' },
+    ];
+
+    const initialStockData = [{
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
         'industry': 'Software - Infrastructure',
@@ -31,45 +44,95 @@ const Dashboard = () => {
         'change': -7.53,
         'change_percentage': -1.77
     },];
+    const [searchTerm, setSearchTerm] = useState('');
+
+
+    const sectors = ['Technology', 'Healthcare', 'Finance', 'Energy', 'Industrials', 'Utilities']; // Example sectors
+    const [selectedSector, setSelectedSector] = useState('Technology');
+
+
+
+    const handleSelectSector = (sector) => {
+        console.log(`Fetching stocks for sector: ${sector}`);
+        setSelectedSector(sector); // Set the selected sector
+        // Here you would call your API to fetch stocks for the given sector
+    };
+
+
+
+
+    const handleDelete = (row) => {
+        console.log('Delete item: ', row);
+        // Perform deletion logic here
+    };
+
+    const handleSearch = () => {
+        console.log("search", searchTerm)
+    }
 
     return (
-        <div className="dashboard-container">
+        <Box sx={{ display: 'flex', pt: '30px' }}>
+            <Drawer
+                variant="permanent"
+                anchor="left"
+                sx={{
+                    width: 200,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: 200,
+                        boxSizing: 'border-box',
+                        top: '80px',
+                        height: `calc(100% - 80px)`,
+                        display: 'flex',
 
-            <table className="stocks-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Symbol</th>
-                        <th>Last</th>
-                        <th>Chg</th>
-                        <th>% Chg</th>
-                        <th>Open</th>
-                        <th>High</th>
-                        <th>Low</th>
-                        <th>Volume</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {stockData.map((stock, index) => (
-                        <tr key={index}>
-                            <td>{stock.shortName}</td>
-                            <td>{stock.symbol}</td>
-                            <td>{stock.close_price.toFixed(2)}</td>
-                            <td>{stock.change.toFixed(2)}</td>
-                            <td>{(stock.change_percentage * 100).toFixed(2)}%</td>
-                            <td>{stock.open_price.toFixed(2)}</td>
-                            <td>{stock.high.toFixed(2)}</td>
-                            <td>{stock.low.toFixed(2)}</td>
-                            <td>{stock.volume.toLocaleString()}</td>
-                            <td><button>Delete</button></td>
-                        </tr>
+                    },
+                }}
+            >
+                <List sx={{ width: '100%' }}>
+                    {sectors.map((sector, index) => (
+                        <ListItem
+                            button
+                            key={index}
+                            selected={selectedSector === sector}
+                            onClick={() => handleSelectSector(sector)}
+                            sx={{
+                                justifyContent: 'center',
+                                backgroundColor: selectedSector === sector ? '#E87A2A' : 'transparent',
+                                '&:hover': {
+                                    backgroundColor: selectedSector === sector ? '#E87A2A' : 'rgba(0, 0, 0, 0.04)',
+                                },
+                            }}
+                        >
+                            <ListItemText primary={sector} sx={{ textAlign: 'center' }} />
+                        </ListItem>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                </List>
+            </Drawer>
+            <Box sx={{ flexGrow: 1, p: 3 }}>
+                <Typography variant="h6" noWrap>
+                    Sector: {selectedSector}
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: "space-around", alignItems: 'center' }}>
+                    <TextField
+                        label="Search by company name"
+                        variant="outlined"
+                        sx={{ flex: 1 }}
+                        margin="normal"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <Button
+                        variant="contained"
+                        sx={{ ml: 2, mt: 0.75, height: '54px', width: "60px" }}
+                        onClick={handleSearch}
+                    >
+                        Search
+                    </Button>
+                </Box>
+                <CustomTable columns={columns} data={initialStockData} onDelete={handleDelete} showDelete={true} showDetail={true} />
+            </Box>
+        </Box>
+
     );
 };
-
 
 export default Dashboard;

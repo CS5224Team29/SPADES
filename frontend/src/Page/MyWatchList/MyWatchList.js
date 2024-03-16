@@ -1,7 +1,19 @@
 import React from 'react';
 import './MyWatchList.css';
+import CustomTable from '../../Components/CustomTable/CustomTable';
 
 const MyWatchList = () => {
+    const columns = [
+        { id: 'shortName', label: 'Name' },
+        { id: 'symbol', label: 'Symbol' },
+        { id: 'close_price', label: 'Last' },
+        { id: 'change', label: 'Chg' },
+        { id: 'change_percentage', label: '% Chg' },
+        { id: 'open_price', label: 'Open' },
+        { id: 'high', label: 'High' },
+        { id: 'low', label: 'Low' },
+        { id: 'volume', label: 'Volume' },
+    ];
     const stockData = [{
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
@@ -31,43 +43,13 @@ const MyWatchList = () => {
         'change': -7.53,
         'change_percentage': -1.77
     },];
+    const handleDelete = (id) => {
+        console.log('Delete item with id: ', id);
+        // Perform deletion logic here
+    };
 
     return (
-        <div className="my-watch-list-container">
-
-            <table className="stocks-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Symbol</th>
-                        <th>Last</th>
-                        <th>Chg</th>
-                        <th>% Chg</th>
-                        <th>Open</th>
-                        <th>High</th>
-                        <th>Low</th>
-                        <th>Volume</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {stockData.map((stock, index) => (
-                        <tr key={index}>
-                            <td>{stock.shortName}</td>
-                            <td>{stock.symbol}</td>
-                            <td>{stock.close_price.toFixed(2)}</td>
-                            <td>{stock.change.toFixed(2)}</td>
-                            <td>{(stock.change_percentage * 100).toFixed(2)}%</td>
-                            <td>{stock.open_price.toFixed(2)}</td>
-                            <td>{stock.high.toFixed(2)}</td>
-                            <td>{stock.low.toFixed(2)}</td>
-                            <td>{stock.volume.toLocaleString()}</td>
-                            <td><button>Delete</button></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+        <CustomTable columns={columns} data={stockData} onDelete={handleDelete} showAdd={false} showDelete={true} showDetail={true} />
     );
 };
 
