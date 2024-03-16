@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Login from './RegisterAndLogin/Login';
 import Register from './RegisterAndLogin/Register';
 
 const App = () => {
   const [isLoginView, setIsLoginView] = useState(true);
-
+  const navigate = useNavigate();
 
   const toggleView = () => {
     setIsLoginView(!isLoginView);
   };
 
+  const handleLoginSuccess = () => {
+    navigate('/dashboard');
+  };
+
+  const handleLoginFailure = () => {
+    setIsLoginView(false);
+    console.log("logview", toggleView)
+  };
+
+
+
   return (
     <div>
       {isLoginView ? (
-        <Login onRegisterClick={toggleView} />
+        <Login onRegisterClick={toggleView} onLoginSuccess={handleLoginSuccess} onLoginFailure={handleLoginFailure} />
       ) : (
-        <Register onRegisterClick={toggleView} />
+        <Register onRegisterClick={toggleView} onRegisterSuccess={handleLoginSuccess} />
       )}
     </div>
   );
