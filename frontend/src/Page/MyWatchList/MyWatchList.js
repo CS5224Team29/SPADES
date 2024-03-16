@@ -49,7 +49,7 @@ const MyWatchList = () => {
     };
 
     return (
-        <CustomTable columns={columns} data={stockData} onDelete={handleDelete} showAdd={false} showDelete={true} showDetail={true} />
+        <CustomTable columns={columns} data={stockData} onDelete={handleDelete} showDelete={true} showDetail={true} showAdd={false} />
     );
 };
 

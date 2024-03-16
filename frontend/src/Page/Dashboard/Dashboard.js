@@ -128,7 +128,7 @@ const Dashboard = () => {
                         Search
                     </Button>
                 </Box>
-                <CustomTable columns={columns} data={initialStockData} onDelete={handleDelete} showDelete={true} showDetail={true} />
+                <CustomTable columns={columns} data={initialStockData} onDelete={handleDelete} showDelete={false} showDetail={true} showAdd={true} />
             </Box>
         </Box>
 
