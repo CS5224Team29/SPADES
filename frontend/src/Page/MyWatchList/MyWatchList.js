@@ -45,7 +45,7 @@ const MyWatchList = () => {
     },];
     const handleDelete = (id) => {
         console.log('Delete item with id: ', id);
-        // Perform deletion logic here
+
     };
 
     return (

@@ -39,7 +39,7 @@
     border-radius: 4px;
 }
 
-/* Control visibility and fade in */
+
 .tooltip.visible {
     opacity: 1;
     visibility: visible;

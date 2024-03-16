@@ -84,7 +84,7 @@ const Register = ({ onRegisterClick }) => {
                                 }}
                             />
                             <Tooltip message={emailError} visible={!!emailError} />
-                            {/* {emailError && <p className="error-message">{emailError}</p>} */}
+
                         </div>
                         <div className="input-group">
                             <input

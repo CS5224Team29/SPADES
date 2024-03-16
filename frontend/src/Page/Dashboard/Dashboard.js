@@ -54,8 +54,8 @@ const Dashboard = () => {
 
     const handleSelectSector = (sector) => {
         console.log(`Fetching stocks for sector: ${sector}`);
-        setSelectedSector(sector); // Set the selected sector
-        // Here you would call your API to fetch stocks for the given sector
+        setSelectedSector(sector);
+
     };
 
 
@@ -63,7 +63,7 @@ const Dashboard = () => {
 
     const handleDelete = (row) => {
         console.log('Delete item: ', row);
-        // Perform deletion logic here
+
     };
 
     const handleSearch = () => {

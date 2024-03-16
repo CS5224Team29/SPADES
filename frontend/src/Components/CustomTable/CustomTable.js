@@ -64,7 +64,7 @@ const CustomTable = ({ columns, data, onDelete, showDelete, showDetail, showAdd 
                                     <Tooltip title="Delete this stock">
                                         <IconButton
                                             size="small"
-                                            sx={{ color: '#E87A2A', width: "40px" }} // Removed size from sx as it's not a valid style property
+                                            sx={{ color: '#E87A2A', width: "40px" }}
                                             onClick={() => onDelete(row)}
                                         >
                                             <DeleteIcon fontSize="small" />

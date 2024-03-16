@@ -28,7 +28,7 @@ const Navigation = () => {
         setPopoverOpen(false);
     };
 
-    // const open = Boolean(anchorEl);
+
 
     return (
         <AppBar position="static" sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: '0 1rem', backgroundColor: 'white' }}>
