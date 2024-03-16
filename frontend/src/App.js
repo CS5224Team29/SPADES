@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Login from './Page/RegisterAndLogin/Register';
+import Login from './Page/RegisterAndLogin/Login';
 import Register from './Page/RegisterAndLogin/Register';
 
 const App = () => {
@@ -8,6 +8,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const toggleView = () => {
+
     setIsLoginView(!isLoginView);
   };
 
