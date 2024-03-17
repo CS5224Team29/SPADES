@@ -1,5 +1,4 @@
 import React from 'react';
-import './Stocks.css';
 
 const Stocks = () => {
     return (

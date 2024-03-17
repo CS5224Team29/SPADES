@@ -1,5 +1,4 @@
 import React from 'react';
-import './MyWatchList.css';
 import CustomTable from '../../Components/CustomTable/CustomTable';
 
 const MyWatchList = () => {
