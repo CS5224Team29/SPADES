@@ -6,6 +6,7 @@ import './RegisterPage.css';
 import Notification from '../../Components/Notification/Notification';
 
 const Register = ({ onRegisterClick }) => {
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -48,11 +49,11 @@ const Register = ({ onRegisterClick }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!validateForm()) {
-            return;
-        }
+        // if (!validateForm()) {
+        //     return;
+        // }
 
-        signUp(email, password).then(
+        signUp(username, email, password).then(
             () => {
                 console.log('Registration successful');
                 setNotification({ message: 'Registration successful', type: 'success' });
@@ -73,6 +74,19 @@ const Register = ({ onRegisterClick }) => {
                 <div className="register-card">
                     <h2>Create new account</h2>
                     <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                    clearErrors();
+                                }}
+                            />
+                            <Tooltip message={emailError} visible={!!emailError} />
+
+                        </div>
                         <div className="input-group">
                             <input
                                 type="email"

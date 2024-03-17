@@ -1,48 +1,62 @@
-import { CognitoUser, AuthenticationDetails, CognitoUserPool } from 'amazon-cognito-identity-js';
+const AWS = require('aws-sdk');
+const { secretHashGenerator } = require('./SecretHash');
 
-const poolData = {
-    UserPoolId: 'us-east-1_slH9JAFDG',
-    ClientId: '40goo00692fvor13eimhfhslhp'
-};
+AWS.config.update({ region: 'us-east-1' });
 
-const userPool = new CognitoUserPool(poolData);
+const cognito = new AWS.CognitoIdentityServiceProvider();
 
 
-export const signIn = (email, password) => {
-    const authenticationDetails = new AuthenticationDetails({
-        Username: email,
+
+export const signUp = async (username, email, password) => {
+
+    const secretHash = await secretHashGenerator(username);
+    console.log(secretHash);
+    const params = {
+        ClientId: '40goo00692fvor13eimhfhslhp',
+        SecretHash: secretHash,
+        Username: username,
         Password: password,
-    });
-
-    const cognitoUser = new CognitoUser({
-        Username: email,
-        Pool: userPool,
-    });
-
-    return new Promise((resolve, reject) => {
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: (session) => {
-                console.log('Authentication successful', session);
-                resolve(session);
+        UserAttributes: [
+            {
+                Name: 'email',
+                Value: email,
             },
-            onFailure: (err) => {
-
-                reject(err);
-            },
-        });
-    });
+        ],
+    };
+    console.log(params);
+    try {
+        const signUpResponse = await cognito.signUp(params).promise();
+        console.log(signUpResponse);
+        return signUpResponse;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 };
 
 
+export const signIn = async (email, password) => {
+    const secretHash = await secretHashGenerator(email);
+    console.log(secretHash);
+    const params = {
+        AuthFlow: 'ADMIN_NO_SRP_AUTH',
+        ClientId: '40goo00692fvor13eimhfhslhp',
+        UserPoolId: 'us-east-1_slH9JAFDG',
+        AuthParameters: {
+            USERNAME: email,
+            SECRET_HASH: secretHash,
+            PASSWORD: password
+        },
+    };
 
-export const signUp = (email, password) => {
-    return new Promise((resolve, reject) => {
-        userPool.signUp(email, password, [], null, (err, result) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(result.user);
-        });
-    });
+    console.log(params);
+
+    try {
+        const authResult = await cognito.adminInitiateAuth(params).promise();
+        console.log(authResult);
+        return authResult;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 };

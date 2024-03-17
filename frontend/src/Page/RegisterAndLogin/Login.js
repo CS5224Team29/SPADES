@@ -40,7 +40,7 @@ const Login = ({ onRegisterClick, onLoginFailure }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (!validateForm()) return;
+        // if (!validateForm()) return;
 
         signIn(email, password)
             .then(() => {
@@ -73,8 +73,8 @@ const Login = ({ onRegisterClick, onLoginFailure }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <input
-                                type="email"
-                                placeholder="email"
+                                type="text"
+                                placeholder="username"
                                 value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value);
