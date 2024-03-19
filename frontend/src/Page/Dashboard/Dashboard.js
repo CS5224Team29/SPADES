@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Button, Drawer, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import CustomTable from '../../Components/CustomTable/CustomTable';
+import { fetchStocksBySector, searchStock } from '../../Services/dashboardListing'
+import { addToWatchList } from '../../Services/watchListing';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+    const navigate = useNavigate();
     const columns = [
         { id: 'shortName', label: 'Name' },
         { id: 'symbol', label: 'Symbol' },
@@ -16,6 +20,7 @@ const Dashboard = () => {
     ];
 
     const initialStockData = [{
+        'id': 'bbbbbbbbbbbb',
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
         'industry': 'Software - Infrastructure',
@@ -30,6 +35,7 @@ const Dashboard = () => {
         'change': -7.53,
         'change_percentage': -1.77
     }, {
+        'id': 'aaaaaaaaaaaaa',
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
         'industry': 'Software - Infrastructure',
@@ -44,17 +50,40 @@ const Dashboard = () => {
         'change': -7.53,
         'change_percentage': -1.77
     },];
+
+
     const [searchTerm, setSearchTerm] = useState('');
 
 
-    const sectors = ['Technology', 'Healthcare', 'Finance', 'Energy', 'Industrials', 'Utilities']; // Example sectors
+    const sectors = ['Technology', 'Healthcare', 'Finance', 'Energy', 'Industrials', 'Utilities'];
     const [selectedSector, setSelectedSector] = useState('Technology');
+    const [stocks, setStocks] = useState(initialStockData);
 
 
 
-    const handleSelectSector = (sector) => {
+    // const [stocks, setStocks] = useState([]); // Initialize with empty array
+
+
+    // useEffect(() => {
+    //     const fetchInitialStocks = async () => {
+    //         try {
+    //             const stocks = await fetchStocksBySector('Technology');
+    //             setStockData(stocks);
+    //         } catch (error) {
+    //             console.error("Error fetching watchlist data:", error);
+
+    //         }
+    //     };
+
+    //     fetchInitialStocks();
+    // }, []);
+
+    const handleSelectSector = async (sector) => {
         console.log(`Fetching stocks for sector: ${sector}`);
         setSelectedSector(sector);
+
+        const newStocks = await fetchStocksBySector(sector);
+        setStocks(newStocks);
 
     };
 
@@ -62,11 +91,32 @@ const Dashboard = () => {
 
 
     const handleDelete = (row) => {
-        console.log('Delete item: ', row);
+        console.log('Deleting', row.id);
+    };
+
+    const handleAdd = async (row) => {
+        await addToWatchList(row.id);
+        console.log('Adding', row.id);
 
     };
 
-    const handleSearch = () => {
+    const handleDetail = (row) => {
+        navigate(`/stocks?id=${row.id}`);
+    };
+
+
+
+    const handleSearch = async () => {
+        const newStock = await searchStock(searchTerm);
+        setStocks(newStock);
+        setSelectedSector(newStock.sector)
+        console.log("search", searchTerm)
+    }
+
+    const handleClean = async (sector) => {
+        setSearchTerm('');
+        const newStocks = await fetchStocksBySector(sector);
+        setStocks(newStocks);
         console.log("search", searchTerm)
     }
 
@@ -127,8 +177,15 @@ const Dashboard = () => {
                     >
                         Search
                     </Button>
+                    <Button
+                        variant="contained"
+                        sx={{ ml: 2, mt: 0.75, height: '54px', width: "60px" }}
+                        onClick={handleClean}
+                    >
+                        Clean Search
+                    </Button>
                 </Box>
-                <CustomTable columns={columns} data={initialStockData} onDelete={handleDelete} showDelete={false} showDetail={true} showAdd={true} />
+                <CustomTable columns={columns} data={stocks} onDelete={handleDelete} onAdd={handleAdd} onDetail={handleDetail} showDelete={false} showDetail={true} showAdd={true} />
             </Box>
         </Box>
 

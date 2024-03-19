@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CustomTable from '../../Components/CustomTable/CustomTable';
+import { useNavigate } from 'react-router-dom';
+import { deleteWatchList, fetchWatchList } from '../../Services/watchListing';
 
 const MyWatchList = () => {
+    const navigate = useNavigate();
     const columns = [
         { id: 'shortName', label: 'Name' },
         { id: 'symbol', label: 'Symbol' },
@@ -13,7 +16,8 @@ const MyWatchList = () => {
         { id: 'low', label: 'Low' },
         { id: 'volume', label: 'Volume' },
     ];
-    const stockData = [{
+    const initialStockData = [{
+        'id': '1',
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
         'industry': 'Software - Infrastructure',
@@ -28,6 +32,7 @@ const MyWatchList = () => {
         'change': -7.53,
         'change_percentage': -1.77
     }, {
+        'id': '2',
         'symbol': 'MSFT',
         'shortName': 'Microsoft Corporation',
         'industry': 'Software - Infrastructure',
@@ -42,13 +47,53 @@ const MyWatchList = () => {
         'change': -7.53,
         'change_percentage': -1.77
     },];
-    const handleDelete = (id) => {
-        console.log('Delete item with id: ', id);
+
+    const [stockData, setStockData] = useState(initialStockData)
+
+
+    // const [stockData, setStockData] = useState([]); // Initialize with empty array
+
+
+    // useEffect(() => {
+    //     const fetchInitialStockData = async () => {
+    //         try {
+    //             const stocks = await fetchWatchList();
+    //             setStockData(stocks);
+    //         } catch (error) {
+    //             console.error("Error fetching watchlist data:", error);
+
+    //         }
+    //     };
+
+    //     fetchInitialStockData();
+    // }, []);
+
+
+
+    const handleDelete = async (row) => {
+
+        console.log('Deleting', row.id);
+
+        await deleteWatchList(row.id);
+        const newStocks = await fetchWatchList()
+        setStockData(newStocks);
 
     };
 
+    const handleAdd = (row) => {
+
+        console.log('Adding', row.id);
+
+    };
+
+    const handleDetail = (row) => {
+
+        navigate(`/stocks?id=${row.id}`);
+    };
+
+
     return (
-        <CustomTable columns={columns} data={stockData} onDelete={handleDelete} showDelete={true} showDetail={true} showAdd={false} />
+        <CustomTable columns={columns} data={stockData} onDelete={handleDelete} onAdd={handleAdd} onDetail={handleDetail} showDelete={true} showDetail={true} showAdd={false} />
     );
 };
 

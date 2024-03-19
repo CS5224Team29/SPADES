@@ -1,4 +1,5 @@
 dashboardData = [{
+    id: String,
     symbol: String,
     shortName: String,
     industry: String,
