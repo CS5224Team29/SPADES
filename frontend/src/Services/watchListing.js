@@ -2,8 +2,8 @@ import axios from "axios";
 
 const GATEWAY_BASE_URL = "https://yourgateway.url";
 
-export const deleteWatchList = (stock) => {
-    axios.delete(`${GATEWAY_BASE_URL}/api/stocks/${stock.id}`)
+export const deleteWatchList = (stock_id) => {
+    axios.delete(`${GATEWAY_BASE_URL}/api/stocks/${stock_id}`)
         .then(response => response.data)
         .catch(error => console.error("Error deleting stock:", error));
 };
