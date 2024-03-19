@@ -11,6 +11,7 @@ const Register = ({ onRegisterClick }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [emailError, setEmailError] = useState('');
+    const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [notification, setNotification] = useState({ message: '', type: '' });
@@ -19,15 +20,23 @@ const Register = ({ onRegisterClick }) => {
 
     const clearErrors = () => {
         setEmailError('');
+        setUsernameError('');
         setPasswordError('');
         setConfirmPasswordError('');
     };
 
-    const validateForm = () => {
+    const validateForm = (username, email, password, confirmPassword) => {
         clearErrors();
         let isValid = true;
+
+        const usernameRegex = /^[A-Za-z0-9_-]+$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const passwordRegex = /^[A-Za-z0-9]{6,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!usernameRegex.test(username)) {
+            setUsernameError('Username must consist of letters, numbers, underscores, or hyphens.');
+            isValid = false;
+        }
 
         if (!emailRegex.test(email)) {
             setEmailError('Please enter a valid email address.');
@@ -35,7 +44,7 @@ const Register = ({ onRegisterClick }) => {
         }
 
         if (!passwordRegex.test(password)) {
-            setPasswordError('Password must be at least 6 characters long and contain only letters and numbers.');
+            setPasswordError('Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).');
             isValid = false;
         }
 
@@ -47,11 +56,12 @@ const Register = ({ onRegisterClick }) => {
         return isValid;
     };
 
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        // if (!validateForm()) {
-        //     return;
-        // }
+        if (!validateForm()) {
+            return;
+        }
 
         signUp(username, email, password).then(
             () => {
@@ -84,7 +94,7 @@ const Register = ({ onRegisterClick }) => {
                                     clearErrors();
                                 }}
                             />
-                            <Tooltip message={emailError} visible={!!emailError} />
+                            <Tooltip message={usernameError} visible={!!usernameError} />
 
                         </div>
                         <div className="input-group">
