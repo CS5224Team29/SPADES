@@ -28,6 +28,11 @@ const Navigation = () => {
         setPopoverOpen(false);
     };
 
+    const handleCleanSession = () => {
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.href = `https://spadesdemo.auth.us-east-1.amazoncognito.com/logout?client_id=5sj2eu3tdbi3hjk002q1c7clun&logout_uri=https://dev.dzym427ke4wx7.amplifyapp.com/logout`;
+    }
 
 
     return (
@@ -105,7 +110,7 @@ const Navigation = () => {
                     <Divider />
                     <Button
                         startIcon={<LogoutIcon />}
-                        onClick={() => console.log("hello")}
+                        onClick={handleCleanSession}
                         sx={{
                             color: 'white',
                             backgroundColor: '#E87A2A',

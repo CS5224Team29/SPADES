@@ -6,6 +6,7 @@ import Dashboard from './Page/Dashboard/Dashboard';
 import MyWatchList from './Page/MyWatchList/MyWatchList';
 import Stocks from './Page/Stocks/Stocks';
 import Navigation from './Components/Navigation/Navigation';
+import LogoutPage from './Page/Logout/Logout';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -29,6 +30,8 @@ root.render(
           <Navigation />
           <Stocks />
         </>} />
+
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
