@@ -55,7 +55,7 @@ const Dashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
 
-    const sectors = ['Technology', 'Healthcare', 'Finance', 'Energy', 'Industrials', 'Utilities'];
+    const sectors = ['Technology', 'Basic Materials', 'Utilities', 'Consumer Defensive', 'Consumer Cyclical', 'Energy', 'Real Estate', 'Industrials', 'Communication Services', 'Healthcare', 'Financial Services'];
     const [selectedSector, setSelectedSector] = useState('Technology');
     const [stocks, setStocks] = useState(initialStockData);
 
