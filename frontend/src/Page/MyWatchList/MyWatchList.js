@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import CustomTable from '../../Components/CustomTable/CustomTable';
 import { useNavigate } from 'react-router-dom';
-import { deleteWatchList, fetchWatchList } from '../../Services/watchListing';
+import { addToWatchList, deleteWatchList, fetchWatchList } from '../../Services/watchListing';
+import { useSelector } from 'react-redux';
+
 
 const MyWatchList = () => {
     const navigate = useNavigate();
+    const userId = useSelector((state) => state.user.userId);
     const columns = [
         { id: 'shortName', label: 'Name' },
         { id: 'symbol', label: 'Symbol' },
@@ -73,16 +76,17 @@ const MyWatchList = () => {
     const handleDelete = async (row) => {
 
         console.log('Deleting', row.id);
-
-        await deleteWatchList(row.id);
-        const newStocks = await fetchWatchList({ user_id: user_id })
-        setStockData(newStocks);
+        await deleteWatchList({ user_id: userId, stock_id: row.id });
+        const newStocksList = await fetchWatchList({ user_id: userId })
+        setStockData(newStocksList);
 
     };
 
-    const handleAdd = (row) => {
+    const handleAdd = async (row) => {
 
-        console.log('Adding', row.id);
+        await addToWatchList({ user_id: userId, stock_id: row.id });
+        const newStocksList = await fetchWatchList({ user_id: userId })
+        setStockData(newStocksList);
 
     };
 

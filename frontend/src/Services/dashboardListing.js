@@ -9,10 +9,8 @@ const axiosInstance = axios.create({
 
 export async function fetchStocksBySector(props) {
     try {
-        const { sector, access_token } = props;
-        if (!access_token) {
-            throw new Error("No access token provided");
-        }
+        const { sector } = props;
+
         if (!sector) {
             throw new Error("No sector provided");
         }
@@ -20,7 +18,7 @@ export async function fetchStocksBySector(props) {
         const response = await axiosInstance.get(`ticker/sector?sector=${sector}`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${access_token}`,
+
             },
         });
 
@@ -35,10 +33,8 @@ export async function fetchStocksBySector(props) {
 
 export async function searchStock(props) {
     try {
-        const { searchText, access_token } = props;
-        if (!access_token) {
-            throw new Error("No access token provided");
-        }
+        const { searchText } = props;
+
         if (!searchText) {
             throw new Error("No search text provided");
         }
@@ -46,7 +42,7 @@ export async function searchStock(props) {
         const response = await axiosInstance.get(`/ticker/name?name=${searchText}`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${access_token}`,
+
             },
         });
 

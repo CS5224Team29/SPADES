@@ -18,24 +18,24 @@ const Login = ({ onRegisterClick, onLoginFailure }) => {
         setPasswordError('');
     };
 
-    const validateForm = () => {
-        clearErrors();
-        let isValid = true;
+    // const validateForm = () => {
+    //     clearErrors();
+    //     let isValid = true;
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setEmailError('Please enter a valid email address.');
-            isValid = false;
-        }
+    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //     if (!emailRegex.test(email)) {
+    //         setEmailError('Please enter a valid email address.');
+    //         isValid = false;
+    //     }
 
-        const passwordRegex = /^[A-Za-z0-9]{6,}$/;
-        if (!passwordRegex.test(password)) {
-            setPasswordError('Password must be at least 6 characters long and contain only letters and numbers.');
-            isValid = false;
-        }
+    //     const passwordRegex = /^[A-Za-z0-9]{6,}$/;
+    //     if (!passwordRegex.test(password)) {
+    //         setPasswordError('Password must be at least 6 characters long and contain only letters and numbers.');
+    //         isValid = false;
+    //     }
 
-        return isValid;
-    };
+    //     return isValid;
+    // };
 
     const handleSubmit = (event) => {
         event.preventDefault();

@@ -27,10 +27,8 @@ export async function deleteWatchList(props) {
 
 export async function fetchWatchList(props) {
     try {
-        const { access_token, user_id } = props;
-        if (!access_token) {
-            throw new Error("No access token provided");
-        }
+        const { user_id } = props;
+
         if (!user_id) {
             throw new Error("No user ID provided");
         }
@@ -38,7 +36,7 @@ export async function fetchWatchList(props) {
         const response = await axiosInstance.get(`/watchlist/get?user_id=${user_id}`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${access_token}`,
+
             },
         });
 
@@ -54,11 +52,8 @@ export async function fetchWatchList(props) {
 
 export async function addToWatchList(props) {
     try {
-        const { user_id, stock_id, access_token } = props;
+        const { user_id, stock_id } = props;
 
-        if (!access_token) {
-            throw new Error("No access token provided");
-        }
         if (!user_id) {
             throw new Error("No user ID provided");
         }
@@ -71,7 +66,7 @@ export async function addToWatchList(props) {
         const response = await axios.post(`${GATEWAY_BASE_URL}/watchlist/add?user_id=${user_id}&ticker_id=${stock_id}`, {}, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${access_token}`,
+
             },
         });
 

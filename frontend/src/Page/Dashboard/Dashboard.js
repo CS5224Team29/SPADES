@@ -1,12 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Drawer, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import CustomTable from '../../Components/CustomTable/CustomTable';
 import { fetchStocksBySector, searchStock } from '../../Services/dashboardListing'
-import { addToWatchList } from '../../Services/watchListing';
+import { addToWatchList, fetchWatchList } from '../../Services/watchListing';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserInfo } from '../../Cognito/UserSession';
+import { setUserId } from '../../Redux/user/userSlice';
+import { useSelector } from 'react-redux';
+import { setWatchlist } from '../../Redux/watchlist/watchlistSlice';
 
 const Dashboard = () => {
     const navigate = useNavigate();
+
+    const userId = useSelector((state) => state.user.userId);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const searchParams = new URLSearchParams(window.location.search);
+            const code = searchParams.get('code');
+
+            console.log("code::::", code)
+            if (code) {
+                const user_id = await fetchUserInfo({ code });
+                if (user_id) {
+                    setUserId(user_id);
+                }
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
+
+
+
+
+
+
     const columns = [
         { id: 'shortName', label: 'Name' },
         { id: 'symbol', label: 'Symbol' },
@@ -59,7 +90,16 @@ const Dashboard = () => {
     const [selectedSector, setSelectedSector] = useState('Technology');
     const [stocks, setStocks] = useState(initialStockData);
 
+    useEffect(() => {
+        const fetchData = () => {
+            if (initialStockData) {
+                setWatchlist(initialStockData);
+            }
 
+        };
+
+        fetchData();
+    }, [initialStockData]);
 
     // const [stocks, setStocks] = useState([]); // Initialize with empty array
 
@@ -91,12 +131,12 @@ const Dashboard = () => {
 
 
     const handleDelete = (row) => {
-        console.log('Deleting', row.id);
     };
 
     const handleAdd = async (row) => {
-        await addToWatchList(row.id);
-        console.log('Adding', row.id);
+        await addToWatchList({ user_id: userId, stock_id: row.id });
+        const newStocksList = await fetchWatchList({ user_id: userId })
+        setWatchlist(newStocksList);
 
     };
 
