@@ -1,37 +1,84 @@
 import axios from "axios";
 
-const GATEWAY_BASE_URL = "https://yourgateway.url";
+const GATEWAY_BASE_URL = "https://kpkxx6puy7h4st72awjuaxm2di0xlbnq.lambda-url.us-east-1.on.aws";
 
-export const deleteWatchList = (stock_id) => {
-    axios.delete(`${GATEWAY_BASE_URL}/api/stocks/${stock_id}`)
-        .then(response => response.data)
-        .catch(error => console.error("Error deleting stock:", error));
-};
+const axiosInstance = axios.create({
+    baseURL: GATEWAY_BASE_URL,
+});
 
 
 
-export const fetchWatchList = () => {
-    return axios.get(`${GATEWAY_BASE_URL}/api/watchlist`)
-        .then(response => response.data)
-        .catch(error => {
-            throw error;
+
+export async function deleteWatchList(props) {
+    try {
+        const { stock_id, user_id } = props;
+
+        const response = await axios.delete(`${GATEWAY_BASE_URL}/watchlist/delete?user_id=${user_id}&ticker_id=${stock_id}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting stock:", error);
+        return null;
+    }
+}
+
+
+
+
+export async function fetchWatchList(props) {
+    try {
+        const { access_token, user_id } = props;
+        if (!access_token) {
+            throw new Error("No access token provided");
+        }
+        if (!user_id) {
+            throw new Error("No user ID provided");
+        }
+
+        const response = await axiosInstance.get(`/watchlist/get?user_id=${user_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${access_token}`,
+            },
         });
-};
 
-export const addToWatchList = (stock_id) => {
-    const payload = {
-        stock_id: stock_id,
+        // Assuming the backend wraps the result in a data object similar to the chat record
+        const watchlistDetails = response.data;
 
-    };
+        return watchlistDetails;
+    } catch (error) {
+        console.error("Failed to fetch watchlist details:", error);
+        return null;
+    }
+}
+
+export async function addToWatchList(props) {
+    try {
+        const { user_id, stock_id, access_token } = props;
+
+        if (!access_token) {
+            throw new Error("No access token provided");
+        }
+        if (!user_id) {
+            throw new Error("No user ID provided");
+        }
+        if (!stock_id) {
+            throw new Error("No stock ID provided");
+        }
 
 
-    axios.post(`${GATEWAY_BASE_URL}/api/watchlist/add`, payload)
-        .then(response => {
-            console.log('Stock added to watchlist successfully', response.data);
 
-        })
-        .catch(error => {
-            console.error('Error adding stock to watchlist:', error);
-
+        const response = await axios.post(`${GATEWAY_BASE_URL}/watchlist/add?user_id=${user_id}&ticker_id=${stock_id}`, {}, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${access_token}`,
+            },
         });
-};
+
+        console.log('Stock added to watchlist successfully', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding stock to watchlist:', error);
+        return null;
+    }
+}

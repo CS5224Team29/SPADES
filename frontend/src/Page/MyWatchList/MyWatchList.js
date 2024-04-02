@@ -75,7 +75,7 @@ const MyWatchList = () => {
         console.log('Deleting', row.id);
 
         await deleteWatchList(row.id);
-        const newStocks = await fetchWatchList()
+        const newStocks = await fetchWatchList({ user_id: user_id })
         setStockData(newStocks);
 
     };
