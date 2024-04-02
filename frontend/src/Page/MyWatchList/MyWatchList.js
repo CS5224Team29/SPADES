@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CustomTable from '../../Components/CustomTable/CustomTable';
 import { useNavigate } from 'react-router-dom';
-import { addToWatchList, deleteWatchList, fetchWatchList } from '../../Services/watchListing';
+import { deleteWatchList, fetchWatchList } from '../../Services/watchListing';
 import { useSelector } from 'react-redux';
 
 
@@ -54,14 +54,12 @@ const MyWatchList = () => {
     const [stockData, setStockData] = useState(initialStockData)
 
 
-    // const [stockData, setStockData] = useState([]); // Initialize with empty array
-
 
     // useEffect(() => {
     //     const fetchInitialStockData = async () => {
     //         try {
-    //             const stocks = await fetchWatchList();
-    //             setStockData(stocks);
+    //             const stocks = await fetchWatchList({userId});
+    //             setWatchlist(stocks);
     //         } catch (error) {
     //             console.error("Error fetching watchlist data:", error);
 
@@ -69,7 +67,7 @@ const MyWatchList = () => {
     //     };
 
     //     fetchInitialStockData();
-    // }, []);
+    // }, [userId]);
 
 
 
@@ -84,15 +82,11 @@ const MyWatchList = () => {
 
     const handleAdd = async (row) => {
 
-        await addToWatchList({ user_id: userId, stock_id: row.id });
-        const newStocksList = await fetchWatchList({ user_id: userId })
-        setStockData(newStocksList);
-
     };
 
     const handleDetail = (row) => {
 
-        navigate(`/stocks?id=${row.id}`);
+        navigate(`/stocks?stockId=${row.id}`);
     };
 
 
