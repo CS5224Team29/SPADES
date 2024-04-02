@@ -6,127 +6,64 @@ import { addToWatchList, fetchWatchList } from '../../Services/watchListing';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserInfo } from '../../Cognito/UserSession';
 import { setUserId } from '../../Redux/user/userSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setWatchlist } from '../../Redux/watchlist/watchlistSlice';
+import { setCurrentSector, setSectorStockList } from '../../Redux/sector/sectorSlice';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const userId = useSelector((state) => state.user.userId);
+    const sectors = useSelector((state) => state.sector.sectors);
+    const currentSector = useSelector((state) => state.sector.currentSector);
+    const sectorStockList = useSelector((state) => state.sector.sectorStockList);
+    const columns = useSelector((state) => state.sector.columns);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [stocks, setStocks] = useState([]);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
             const searchParams = new URLSearchParams(window.location.search);
             const code = searchParams.get('code');
-
-            console.log("code::::", code)
             if (code) {
                 const user_id = await fetchUserInfo({ code });
                 if (user_id) {
-                    setUserId(user_id);
+                    dispatch(setUserId(user_id));
                 }
             }
         };
 
         fetchData();
-    }, []);
+    }, [dispatch]);
 
-
-
-
-
-
-
-
-    const columns = [
-        { id: 'shortName', label: 'Name' },
-        { id: 'symbol', label: 'Symbol' },
-        { id: 'close_price', label: 'Last' },
-        { id: 'change', label: 'Chg' },
-        { id: 'change_percentage', label: '% Chg' },
-        { id: 'open_price', label: 'Open' },
-        { id: 'high', label: 'High' },
-        { id: 'low', label: 'Low' },
-        { id: 'volume', label: 'Volume' },
-    ];
-
-    const initialStockData = [{
-        'id': 'bbbbbbbbbbbb',
-        'symbol': 'MSFT',
-        'shortName': 'Microsoft Corporation',
-        'industry': 'Software - Infrastructure',
-        'website': 'https://www.microsoft.com',
-        'sector': 'Technology',
-        'open_price': 419.27,
-        'close_price': 417.69,
-        'high': 422.60,
-        'low': 415.76,
-        'volume': 14053016,
-        'prev_close_price': 425.22,
-        'change': -7.53,
-        'change_percentage': -1.77
-    }, {
-        'id': 'aaaaaaaaaaaaa',
-        'symbol': 'MSFT',
-        'shortName': 'Microsoft Corporation',
-        'industry': 'Software - Infrastructure',
-        'website': 'https://www.microsoft.com',
-        'sector': 'Technology',
-        'open_price': 419.27,
-        'close_price': 417.69,
-        'high': 422.60,
-        'low': 415.76,
-        'volume': 14053016,
-        'prev_close_price': 425.22,
-        'change': -7.53,
-        'change_percentage': -1.77
-    },];
-
-
-    const [searchTerm, setSearchTerm] = useState('');
-
-
-    const sectors = ['Technology', 'Basic Materials', 'Utilities', 'Consumer Defensive', 'Consumer Cyclical', 'Energy', 'Real Estate', 'Industrials', 'Communication Services', 'Healthcare', 'Financial Services'];
-    const [selectedSector, setSelectedSector] = useState('Technology');
-    const [stocks, setStocks] = useState(initialStockData);
 
     useEffect(() => {
-        const fetchData = () => {
-            if (initialStockData) {
-                setWatchlist(initialStockData);
+        const fetchInitialStocks = async () => {
+            try {
+                const initialStocks = await fetchStocksBySector({ sector: 'Technology' });
+                dispatch(setCurrentSector('Technology'));
+                dispatch(setSectorStockList(initialStocks));
+                setStocks(initialStocks);
+            } catch (error) {
+                console.error("Error fetching stock data:", error);
             }
-
         };
 
-        fetchData();
-    }, [initialStockData]);
-
-    // const [stocks, setStocks] = useState([]); // Initialize with empty array
-
-
-    // useEffect(() => {
-    //     const fetchInitialStocks = async () => {
-    //         try {
-    //             const stocks = await fetchStocksBySector('Technology');
-    //             setStockData(stocks);
-    //         } catch (error) {
-    //             console.error("Error fetching watchlist data:", error);
-
-    //         }
-    //     };
-
-    //     fetchInitialStocks();
-    // }, []);
+        fetchInitialStocks();
+    }, [dispatch]);
 
     const handleSelectSector = async (sector) => {
-        console.log(`Fetching stocks for sector: ${sector}`);
-        setSelectedSector(sector);
-
-        const newStocks = await fetchStocksBySector(sector);
-        setStocks(newStocks);
-
+        dispatch(setCurrentSector(sector));
+        if (!sectorStockList[sector] || sectorStockList[sector].length === 0) {
+            const newStocks = await fetchStocksBySector({ sector });
+            dispatch(setSectorStockList({ [sector]: newStocks }));
+            setStocks(newStocks);
+        } else {
+            setStocks(sectorStockList[sector]);
+        }
     };
-
 
 
 
@@ -149,16 +86,27 @@ const Dashboard = () => {
     const handleSearch = async () => {
         const newStock = await searchStock(searchTerm);
         setStocks(newStock);
-        setSelectedSector(newStock.sector)
+        setCurrentSector(newStock.sector)
         console.log("search", searchTerm)
     }
 
     const handleClean = async (sector) => {
         setSearchTerm('');
-        const newStocks = await fetchStocksBySector(sector);
-        setStocks(newStocks);
+
+        setCurrentSector(sector);
+        if (!sectorStockList[sector].length > 0) {
+            const newStocks = await fetchStocksBySector({ sector });
+            setSectorStockList(newStocks);
+            setStocks(newStocks);
+        } else {
+            setStocks(sectorStockList[sector]);
+            setStocks(sectorStockList[sector]);
+        }
+
         console.log("search", searchTerm)
     }
+
+    console.log("stocks", stocks)
 
     return (
         <Box sx={{ display: 'flex', pt: '30px' }}>
@@ -183,13 +131,13 @@ const Dashboard = () => {
                         <ListItem
                             button
                             key={index}
-                            selected={selectedSector === sector}
+                            selected={currentSector === sector}
                             onClick={() => handleSelectSector(sector)}
                             sx={{
                                 justifyContent: 'center',
-                                backgroundColor: selectedSector === sector ? '#E87A2A' : 'transparent',
+                                backgroundColor: currentSector === sector ? '#E87A2A' : 'transparent',
                                 '&:hover': {
-                                    backgroundColor: selectedSector === sector ? '#E87A2A' : 'rgba(0, 0, 0, 0.04)',
+                                    backgroundColor: currentSector === sector ? '#E87A2A' : 'rgba(0, 0, 0, 0.04)',
                                 },
                             }}
                         >
@@ -200,7 +148,7 @@ const Dashboard = () => {
             </Drawer>
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <Typography variant="h6" noWrap>
-                    Sector: {selectedSector}
+                    Sector: {currentSector}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: "space-around", alignItems: 'center' }}>
                     <TextField
@@ -225,7 +173,10 @@ const Dashboard = () => {
                         Clean Search
                     </Button>
                 </Box>
-                <CustomTable columns={columns} data={stocks} onDelete={handleDelete} onAdd={handleAdd} onDetail={handleDetail} showDelete={false} showDetail={true} showAdd={true} />
+                {stocks &&
+                    <CustomTable columns={columns} data={stocks} onDelete={handleDelete} onAdd={handleAdd} onDetail={handleDetail} showDelete={false} showDetail={true} showAdd={true} />
+                }
+
             </Box>
         </Box>
 
