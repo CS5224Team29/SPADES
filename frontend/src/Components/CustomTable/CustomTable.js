@@ -53,7 +53,7 @@ const CustomTable = ({ columns, data, onDelete, onDetail, onAdd, showDelete, sho
                                             sx={{ color: '#E87A2A', size: "10px", width: "40px" }}
                                             onClick={() => {
                                                 onAdd(row);
-                                                console.log("add to list")
+
                                             }}
                                         >
                                             <BookmarkAddIcon fontSize="small" />

@@ -10,7 +10,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider();
 export const signUp = async (username, email, password) => {
 
     const secretHash = await secretHashGenerator(username);
-    console.log(secretHash);
+
     const params = {
         ClientId: '40goo00692fvor13eimhfhslhp',
         SecretHash: secretHash,
@@ -23,10 +23,10 @@ export const signUp = async (username, email, password) => {
             },
         ],
     };
-    console.log(params);
+
     try {
         const signUpResponse = await cognito.signUp(params).promise();
-        console.log(signUpResponse);
+
         return signUpResponse;
     } catch (error) {
         console.error(error);
@@ -37,7 +37,7 @@ export const signUp = async (username, email, password) => {
 
 export const signIn = async (email, password) => {
     const secretHash = await secretHashGenerator(email);
-    console.log(secretHash);
+
     const params = {
         AuthFlow: 'ADMIN_NO_SRP_AUTH',
         ClientId: '40goo00692fvor13eimhfhslhp',
@@ -49,11 +49,11 @@ export const signIn = async (email, password) => {
         },
     };
 
-    console.log(params);
+
 
     try {
         const authResult = await cognito.adminInitiateAuth(params).promise();
-        console.log(authResult);
+
         return authResult;
     } catch (error) {
         console.error(error);

@@ -17,7 +17,7 @@ export const secretHashGenerator = async (username) => {
             body: JSON.stringify(payload)
         });
         const data = await response.text();
-        console.log("Lambda function response:", data);
+
 
         return data;
     } catch (error) {

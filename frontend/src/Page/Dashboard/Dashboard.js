@@ -80,12 +80,15 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchInitialWatchlistData = async () => {
             try {
-                setIsLoading(true);
-                const initialWatchlist = await fetchWatchList({ user_id: userId });
-                if (initialWatchlist) {
-                    dispatch(setWatchlist(initialWatchlist));
+                if (userId) {
+                    setIsLoading(true);
+                    const initialWatchlist = await fetchWatchList({ user_id: userId });
+                    if (initialWatchlist) {
+                        dispatch(setWatchlist(initialWatchlist));
+                    }
+                    setIsLoading(false);
                 }
-                setIsLoading(false);
+
             } catch (error) {
                 console.error("Error fetching watchlist data:", error);
             }
@@ -95,9 +98,9 @@ const Dashboard = () => {
     }, [userId, dispatch]);
 
     const handleSelectSector = async (sector) => {
-        console.log({ sectorStockList });
+
         dispatch(setCurrentSector(sector));
-        console.log(`sectorStockList[${sector}]`, sectorStockList[sector])
+
         if (!sectorStockList[sector] || sectorStockList[sector].length === 0) {
             setIsLoading(true);
             const newStocks = await fetchStocksBySector({ sector });
@@ -118,14 +121,14 @@ const Dashboard = () => {
     };
 
     const handleAdd = async (row) => {
-        console.log({ sectorStockList });
+
         const response = await addToWatchList({ user_id: userId, stock_id: row.id });
         if (response) {
             const newStockData = row;
-            console.log({ row });
+
             dispatch(setWatchlist([...watchlist, newStockData]));
             setNotification({ message: 'Added to watchlist successfully', type: 'success' });
-            console.log("after adding", watchlist);
+
         }
     };
 
@@ -134,7 +137,7 @@ const Dashboard = () => {
         navigate(`/stocks?id=${row.id}`);
     };
 
-    console.log({ sectorStockList });
+
 
     const handleSearch = async () => {
         setIsLoading(true);
@@ -145,12 +148,11 @@ const Dashboard = () => {
             setIsLoading(false)
         }
 
-        console.log("search", searchTerm)
     }
 
     const handleClean = async (sector) => {
         setSearchTerm('');
-        console.log({ sectorStockList });
+
         setCurrentSector(sector);
         if (!sectorStockList[sector].length > 0) {
             setIsLoading(true);
@@ -165,10 +167,9 @@ const Dashboard = () => {
             setStocks(sectorStockList[sector]);
         }
 
-        console.log("search", searchTerm)
+
     }
 
-    console.log("stocks", stocks)
 
     return (
         <Box sx={{ display: 'flex', pt: '30px' }}>

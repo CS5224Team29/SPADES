@@ -51,7 +51,7 @@ const MyWatchList = () => {
 
 
     const handleDelete = async (row) => {
-        console.log('Deleting', row.id);
+
         try {
             setIsLoading(true);
             const response = await deleteWatchList({ user_id: userId, stock_id: row.id });

@@ -32,12 +32,11 @@ export async function fetchUserInfo(props) {
 
         const response = await axiosInstance.post(`oauth2/token`, params.toString());
 
-        console.log("response::::", response);
+
         const idToken = response.data.id_token;
         const decodedToken = jwtDecode(idToken);
 
-        console.log('User ID:', decodedToken.sub);
-        console.log('Username:', decodedToken['cognito:username']);
+
 
         return decodedToken && decodedToken.sub;
     } catch (error) {

@@ -42,7 +42,6 @@ export async function fetchWatchList(props) {
 
         const watchlistDetails = response.data.data;
 
-        console.log(watchlistDetails)
 
         return watchlistDetails;
     } catch (error) {
@@ -71,7 +70,7 @@ export async function addToWatchList(props) {
             },
         });
 
-        console.log('Stock added to watchlist successfully', response.data);
+
         return response.data;
     } catch (error) {
         console.error('Error adding stock to watchlist:', error);
