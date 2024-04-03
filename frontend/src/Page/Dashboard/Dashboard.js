@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Drawer, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Drawer, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import CustomTable from '../../Components/CustomTable/CustomTable';
 import { fetchStocksBySector, searchStock } from '../../Services/dashboardListing'
 import { addToWatchList, fetchWatchList } from '../../Services/watchListing';
@@ -13,53 +13,88 @@ import { setCurrentSector, setSectorStockList } from '../../Redux/sector/sectorS
 const Dashboard = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const userId = useSelector((state) => state.user.userId);
+    // const userId = useSelector((state) => state.user.userId);
+    const userId = "b51fba12-a56e-4e83-ae30-89e14c5d6081";
+    const watchlist = useSelector((state) => state.watchlist.watchlist);
     const sectors = useSelector((state) => state.sector.sectors);
     const currentSector = useSelector((state) => state.sector.currentSector);
     const sectorStockList = useSelector((state) => state.sector.sectorStockList);
     const columns = useSelector((state) => state.sector.columns);
+
+
     const [searchTerm, setSearchTerm] = useState('');
     const [stocks, setStocks] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
+        console.log("Watchlist has updated", watchlist);
+    }, [watchlist]);
 
+
+
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         const searchParams = new URLSearchParams(window.location.search);
+    //         const code = searchParams.get('code');
+    //         if (code) {
+    //             const user_id = await fetchUserInfo({ code });
+    //             if (user_id) {
+    //                 dispatch(setUserId(user_id));
+    //             }
+    //         }
+    //     };
+
+    //     fetchUserData();
+    // }, [dispatch]);
 
 
     useEffect(() => {
-        const fetchData = async () => {
-            const searchParams = new URLSearchParams(window.location.search);
-            const code = searchParams.get('code');
-            if (code) {
-                const user_id = await fetchUserInfo({ code });
-                if (user_id) {
-                    dispatch(setUserId(user_id));
+        if (!sectorStockList[currentSector] || sectorStockList[currentSector].length === 0) {
+            setIsLoading(true);
+            const fetchInitialStocks = async () => {
+                const data = await fetchStocksBySector({ sector: currentSector });
+                if (data) {
+                    dispatch(setSectorStockList({ sector: currentSector, data }));
+                    setStocks(data);
+                    setIsLoading(false);
                 }
-            }
-        };
 
-        fetchData();
-    }, [dispatch]);
-
+            };
+            fetchInitialStocks();
+        } else {
+            setStocks(sectorStockList[currentSector]);
+        }
+    }, [dispatch, currentSector, sectorStockList]);
 
     useEffect(() => {
-        const fetchInitialStocks = async () => {
+        const fetchInitialWatchlistData = async () => {
             try {
-                const initialStocks = await fetchStocksBySector({ sector: 'Technology' });
-                dispatch(setCurrentSector('Technology'));
-                dispatch(setSectorStockList(initialStocks));
-                setStocks(initialStocks);
+                setIsLoading(true);
+                const initialWatchlist = await fetchWatchList({ user_id: userId });
+                if (initialWatchlist) {
+                    dispatch(setWatchlist(initialWatchlist));
+                }
+                setIsLoading(false);
             } catch (error) {
-                console.error("Error fetching stock data:", error);
+                console.error("Error fetching watchlist data:", error);
             }
         };
 
-        fetchInitialStocks();
-    }, [dispatch]);
+        fetchInitialWatchlistData();
+    }, [userId, dispatch]);
 
     const handleSelectSector = async (sector) => {
+        console.log({ sectorStockList });
         dispatch(setCurrentSector(sector));
+        console.log(`sectorStockList[${sector}]`, sectorStockList[sector])
         if (!sectorStockList[sector] || sectorStockList[sector].length === 0) {
+            setIsLoading(true);
             const newStocks = await fetchStocksBySector({ sector });
-            dispatch(setSectorStockList({ [sector]: newStocks }));
-            setStocks(newStocks);
+            if (newStocks) {
+                dispatch(setSectorStockList({ sector, data: newStocks }));
+                setStocks(newStocks);
+                setIsLoading(false);
+            }
+
         } else {
             setStocks(sectorStockList[sector]);
         }
@@ -71,35 +106,48 @@ const Dashboard = () => {
     };
 
     const handleAdd = async (row) => {
-        await addToWatchList({ user_id: userId, stock_id: row.id });
-        const newStocksList = await fetchWatchList({ user_id: userId })
-        setWatchlist(newStocksList);
-
+        console.log({ sectorStockList });
+        const response = await addToWatchList({ user_id: userId, stock_id: row.id });
+        if (response) {
+            const newStockData = row;
+            console.log({ row })
+            dispatch(setWatchlist([...watchlist, newStockData]));
+            console.log("after adding", watchlist)
+        }
     };
 
     const handleDetail = (row) => {
         navigate(`/stocks?id=${row.id}`);
     };
 
-
+    console.log({ sectorStockList });
 
     const handleSearch = async () => {
-        const newStock = await searchStock(searchTerm);
-        setStocks(newStock);
-        setCurrentSector(newStock.sector)
+        setIsLoading(true);
+        const newStock = await searchStock({ searchText: searchTerm });
+        if (newStock) {
+            setStocks(newStock);
+            setCurrentSector(newStock.sector)
+            setIsLoading(false)
+        }
+
         console.log("search", searchTerm)
     }
 
     const handleClean = async (sector) => {
         setSearchTerm('');
-
+        console.log({ sectorStockList });
         setCurrentSector(sector);
         if (!sectorStockList[sector].length > 0) {
+            setIsLoading(true);
             const newStocks = await fetchStocksBySector({ sector });
-            setSectorStockList(newStocks);
-            setStocks(newStocks);
+            if (newStocks) {
+                setSectorStockList(newStocks);
+                setStocks(newStocks);
+                setIsLoading(false);
+            }
+
         } else {
-            setStocks(sectorStockList[sector]);
             setStocks(sectorStockList[sector]);
         }
 
@@ -173,9 +221,20 @@ const Dashboard = () => {
                         Clean Search
                     </Button>
                 </Box>
-                {stocks &&
+                {!isLoading ? (stocks &&
                     <CustomTable columns={columns} data={stocks} onDelete={handleDelete} onAdd={handleAdd} onDetail={handleDetail} showDelete={false} showDetail={true} showAdd={true} />
-                }
+                ) : (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '20vh',
+                        }}
+                    >
+                        <CircularProgress />
+                    </Box>
+                )}
 
             </Box>
         </Box>

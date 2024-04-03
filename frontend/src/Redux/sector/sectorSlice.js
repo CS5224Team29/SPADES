@@ -25,7 +25,8 @@ export const sectorSlice = createSlice({
       state.currentSector = action.payload;
     },
     setSectorStockList: (state, action) => {
-      state.sectorStockList[state.currentSector] = action.payload;
+      const { sector, data } = action.payload;
+      state.sectorStockList[sector] = data;
     },
   },
 });

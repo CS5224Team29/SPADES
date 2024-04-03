@@ -1,37 +1,28 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Login from './Page/RegisterAndLogin/Login';
-import Register from './Page/RegisterAndLogin/Register';
 
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, CircularProgress } from '@mui/material';
 const App = () => {
-  const [isLoginView, setIsLoginView] = useState(true);
   const navigate = useNavigate();
 
-  const toggleView = () => {
+  useEffect(() => {
 
-    setIsLoginView(!isLoginView);
-  };
-
-  const handleLoginSuccess = () => {
     navigate('/dashboard');
-  };
-
-  const handleLoginFailure = () => {
-    setIsLoginView(false);
-    console.log("logview", toggleView)
-  };
-
-
+  }, [navigate]);
 
   return (
-    <div>
-      {isLoginView ? (
-        <Login onRegisterClick={toggleView} onLoginSuccess={handleLoginSuccess} onLoginFailure={handleLoginFailure} />
-      ) : (
-        <Register onRegisterClick={toggleView} onRegisterSuccess={handleLoginSuccess} />
-      )}
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '20vh',
+      }}
+    >
+      <CircularProgress />
+    </Box>
   );
 };
 
 export default App;
+

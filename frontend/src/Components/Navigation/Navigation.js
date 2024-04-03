@@ -101,8 +101,8 @@ const Navigation = () => {
                         padding: "10px"
                     }}
                 >
-                    <Typography sx={{ p: 2, fontSize: "12px" }}>johndoe@gmail.com</Typography>
-                    <Divider />
+                    {/* <Typography sx={{ p: 2, fontSize: "12px" }}>johndoe@gmail.com</Typography>
+                    <Divider /> */}
                     <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5 }}>
                         <MonetizationOnIcon sx={{ mr: 1, size: "15px", color: '#E87A2A' }} />
                         <Typography sx={{ fontSize: "12px" }}>50</Typography>
@@ -116,6 +116,7 @@ const Navigation = () => {
                             backgroundColor: '#E87A2A',
                             borderRadius: 0,
                             fontSize: "12px",
+                            width: "100%",
                             p: 1.5
 
                         }}

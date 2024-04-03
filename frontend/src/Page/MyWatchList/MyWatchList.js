@@ -1,97 +1,130 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomTable from '../../Components/CustomTable/CustomTable';
 import { useNavigate } from 'react-router-dom';
 import { deleteWatchList, fetchWatchList } from '../../Services/watchListing';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setWatchlist } from '../../Redux/watchlist/watchlistSlice';
+import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 
 
 const MyWatchList = () => {
     const navigate = useNavigate();
-    const userId = useSelector((state) => state.user.userId);
-    const columns = [
-        { id: 'shortName', label: 'Name' },
-        { id: 'symbol', label: 'Symbol' },
-        { id: 'close_price', label: 'Last' },
-        { id: 'change', label: 'Chg' },
-        { id: 'change_percentage', label: '% Chg' },
-        { id: 'open_price', label: 'Open' },
-        { id: 'high', label: 'High' },
-        { id: 'low', label: 'Low' },
-        { id: 'volume', label: 'Volume' },
-    ];
-    const initialStockData = [{
-        'id': '1',
-        'symbol': 'MSFT',
-        'shortName': 'Microsoft Corporation',
-        'industry': 'Software - Infrastructure',
-        'website': 'https://www.microsoft.com',
-        'sector': 'Technology',
-        'open_price': 419.27,
-        'close_price': 417.69,
-        'high': 422.60,
-        'low': 415.76,
-        'volume': 14053016,
-        'prev_close_price': 425.22,
-        'change': -7.53,
-        'change_percentage': -1.77
-    }, {
-        'id': '2',
-        'symbol': 'MSFT',
-        'shortName': 'Microsoft Corporation',
-        'industry': 'Software - Infrastructure',
-        'website': 'https://www.microsoft.com',
-        'sector': 'Technology',
-        'open_price': 419.27,
-        'close_price': 417.69,
-        'high': 422.60,
-        'low': 415.76,
-        'volume': 14053016,
-        'prev_close_price': 425.22,
-        'change': -7.53,
-        'change_percentage': -1.77
-    },];
+    // const userId = useSelector((state) => state.user.userId);
+    const userId = "b51fba12-a56e-4e83-ae30-89e14c5d6081";
+    const columns = useSelector((state) => state.sector.columns);
+    const watchlist = useSelector((state) => state.watchlist.watchlist);
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const [stockData, setStockData] = useState(initialStockData)
-
-
+    console.log({ userId });
 
     // useEffect(() => {
-    //     const fetchInitialStockData = async () => {
+    //     const fetchInitialWatchlistData = async () => {
     //         try {
-    //             const stocks = await fetchWatchList({userId});
-    //             setWatchlist(stocks);
+    //             setIsLoading(true);
+    //             const initialWatchlist = await fetchWatchList({ user_id: userId });
+    //             if (initialWatchlist) {
+    //                 dispatch(setWatchlist(initialWatchlist));
+    //             }
+    //             setIsLoading(false);
     //         } catch (error) {
     //             console.error("Error fetching watchlist data:", error);
-
     //         }
     //     };
 
-    //     fetchInitialStockData();
-    // }, [userId]);
+    //     fetchInitialWatchlistData();
+    // }, [userId, dispatch]);
 
 
 
     const handleDelete = async (row) => {
-
         console.log('Deleting', row.id);
-        await deleteWatchList({ user_id: userId, stock_id: row.id });
-        const newStocksList = await fetchWatchList({ user_id: userId })
-        setStockData(newStocksList);
-
+        try {
+            setIsLoading(true);
+            const response = await deleteWatchList({ user_id: userId, stock_id: row.id });
+            if (response) {
+                const updatedWatchlist = watchlist.filter(stock => stock.id !== row.id);
+                dispatch(setWatchlist(updatedWatchlist));
+            }
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error deleting stock from watchlist:", error);
+        }
     };
 
-    const handleAdd = async (row) => {
 
-    };
+    const handleAdd = async (row) => { };
 
     const handleDetail = (row) => {
 
-        navigate(`/stocks?stockId=${row.id}`);
+        navigate(`/stocks?id=${row.id}`);
     };
 
 
     return (
-        <CustomTable columns={columns} data={stockData} onDelete={handleDelete} onAdd={handleAdd} onDetail={handleDetail} showDelete={true} showDetail={true} showAdd={false} />
+        <>
+            {!isLoading ? (
+                watchlist ? (
+                    <CustomTable
+                        columns={columns}
+                        data={watchlist}
+                        onDelete={handleDelete}
+                        onAdd={handleAdd}
+                        onDetail={handleDetail}
+                        showDelete={true}
+                        showDetail={true}
+                        showAdd={false} />)
+                    : (<Box
+                        sx={{
+                            margin: 6,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            border: '1.5px solid ',
+                            borderColor: '#E87A2A',
+                            borderRadius: 4,
+                            height: '15vh',
+                        }}
+                    >
+                        <Stack
+                            direction="row"
+                            spacing={0.5}
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Typography component="span" align="center">
+                                {`You don't have any stock in your watchlist.`}
+                            </Typography>
+                            <Typography
+                                component="span"
+                                sx={{
+                                    color: '#E87A2A',
+                                    fontWeight: 'bold',
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => navigate('/dashboard')}
+                            >
+                                Add a stock to watchlist
+                            </Typography>
+                        </Stack>
+                    </Box >)
+
+
+            ) : (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '20vh',
+                    }}
+                >
+                    <CircularProgress />
+                </Box >
+            )}
+
+        </>
     );
 };
 

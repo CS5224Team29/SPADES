@@ -41,7 +41,9 @@ export async function fetchWatchList(props) {
         });
 
         // Assuming the backend wraps the result in a data object similar to the chat record
-        const watchlistDetails = response.data;
+        const watchlistDetails = response.data.data;
+
+        console.log(watchlistDetails)
 
         return watchlistDetails;
     } catch (error) {
