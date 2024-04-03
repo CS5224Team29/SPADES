@@ -39,6 +39,8 @@ const Dashboard = () => {
                 const user_id = await fetchUserInfo({ code });
                 if (user_id) {
                     dispatch(setUserId(user_id));
+                    console.log({ user_id })
+
                 }
             }
         };

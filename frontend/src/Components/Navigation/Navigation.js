@@ -31,7 +31,7 @@ const Navigation = () => {
     const handleCleanSession = () => {
         sessionStorage.clear();
         localStorage.clear();
-        window.location.href = `https://spades.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=4l27f32rcgmkkh51eu23g7ormr&logout_uri=https://dev.dzym427ke4wx7.amplifyapp.com/logout`;
+        window.location.href = `https://spades.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=4l27f32rcgmkkh51eu23g7ormr&logout_uri=http://localhost:3000/logout`;
     }
 
 
