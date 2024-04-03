@@ -1,14 +1,7 @@
 
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { Box, CircularProgress } from '@mui/material';
 const App = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-
-    navigate('/dashboard');
-  }, [navigate]);
 
   return (
     <Box
