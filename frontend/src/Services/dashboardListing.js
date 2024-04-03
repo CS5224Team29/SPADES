@@ -1,11 +1,4 @@
-import axios from 'axios';
-
-
-const BASE_URL = 'https://kpkxx6puy7h4st72awjuaxm2di0xlbnq.lambda-url.us-east-1.on.aws';
-
-const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-});
+import { axiosInstance } from '../Utils/AxiosInstance';
 
 export async function fetchStocksBySector(props) {
     try {

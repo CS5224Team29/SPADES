@@ -4,6 +4,7 @@ import { AppBar, Tabs, Tab, Box, Typography, IconButton, Popover, Button, Divide
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import { LOGOUT_URL } from '../../Utils/Parameter';
 
 const Navigation = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Navigation = () => {
     const handleCleanSession = () => {
         sessionStorage.clear();
         localStorage.clear();
-        window.location.href = `https://spades.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=4l27f32rcgmkkh51eu23g7ormr&logout_uri=http://localhost:3000/logout`;
+        window.location.href = LOGOUT_URL;
     }
 
 

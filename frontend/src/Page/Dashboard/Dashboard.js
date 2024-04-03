@@ -15,7 +15,6 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const userId = useSelector((state) => state.user.userId);
-    // const userId = "b51fba12-a56e-4e83-ae30-89e14c5d6081";
     const watchlist = useSelector((state) => state.watchlist.watchlist);
     const sectors = useSelector((state) => state.sector.sectors);
     const currentSector = useSelector((state) => state.sector.currentSector);

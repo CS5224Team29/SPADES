@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { SIGNIN_URL } from '../../Utils/Parameter';
 
 
 const Logout = () => {
@@ -6,9 +7,7 @@ const Logout = () => {
 
         sessionStorage.clear();
         localStorage.clear();
-
-
-        window.location.href = `https://spades.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=4l27f32rcgmkkh51eu23g7ormr&redirect_uri=http://localhost:3000/dashboard`;
+        window.location.href = SIGNIN_URL;
     }, []);
 
     return null;

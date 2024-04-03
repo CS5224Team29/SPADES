@@ -1,19 +1,10 @@
-import axios from "axios";
-
-const GATEWAY_BASE_URL = "https://kpkxx6puy7h4st72awjuaxm2di0xlbnq.lambda-url.us-east-1.on.aws";
-
-const axiosInstance = axios.create({
-    baseURL: GATEWAY_BASE_URL,
-});
-
-
-
+import { axiosInstance } from "../Utils/AxiosInstance";
 
 export async function deleteWatchList(props) {
     try {
         const { stock_id, user_id } = props;
 
-        const response = await axios.delete(`${GATEWAY_BASE_URL}/watchlist/delete?user_id=${user_id}&ticker_id=${stock_id}`);
+        const response = await axiosInstance.delete(`/watchlist/delete?user_id=${user_id}&ticker_id=${stock_id}`);
 
         return response.data;
     } catch (error) {
@@ -63,10 +54,9 @@ export async function addToWatchList(props) {
 
 
 
-        const response = await axios.post(`${GATEWAY_BASE_URL}/watchlist/add?user_id=${user_id}&ticker_id=${stock_id}`, {}, {
+        const response = await axiosInstance.post(`/watchlist/add?user_id=${user_id}&ticker_id=${stock_id}`, {}, {
             headers: {
                 "Content-Type": "application/json",
-
             },
         });
 
