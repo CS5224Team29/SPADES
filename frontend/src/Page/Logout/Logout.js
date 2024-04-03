@@ -6,7 +6,7 @@ const Logout = () => {
         sessionStorage.clear();
         localStorage.clear();
 
-        window.location.href = 'https://spadesdemo.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=67q01aeplo39baec5f0h4qca3a&redirect_uri=https://dev.dzym427ke4wx7.amplifyapp.com/dashboard';
+        window.location.href = 'https://spades.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=4l27f32rcgmkkh51eu23g7ormra&redirect_uri=http://localhost:3000/dashboard';
     }, []);
 
     return null;
