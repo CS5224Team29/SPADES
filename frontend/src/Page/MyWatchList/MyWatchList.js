@@ -18,7 +18,6 @@ const MyWatchList = () => {
     const [notification, setNotification] = useState({ message: '', type: '' });
 
 
-    console.log({ userId });
 
     useEffect(() => {
         const fetchInitialWatchlistData = async () => {
