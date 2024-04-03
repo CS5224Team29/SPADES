@@ -10,8 +10,8 @@ import Notification from '../../Components/Notification/Notification';
 
 const MyWatchList = () => {
     const navigate = useNavigate();
-    // const userId = useSelector((state) => state.user.userId);
-    const userId = "b51fba12-a56e-4e83-ae30-89e14c5d6081";
+    const userId = useSelector((state) => state.user.userId);
+    // const userId = "b51fba12-a56e-4e83-ae30-89e14c5d6081";
     const columns = useSelector((state) => state.sector.columns);
     const watchlist = useSelector((state) => state.watchlist.watchlist);
     const dispatch = useDispatch();
@@ -40,12 +40,9 @@ const MyWatchList = () => {
 
     useEffect(() => {
         if (notification.message !== '') {
-            // 设置定时器让通知在2秒后消失
             const timer = setTimeout(() => {
-                setNotification({ message: '', type: '' }); // 清空通知
+                setNotification({ message: '', type: '' });
             }, 2000);
-
-            // 清理函数
             return () => clearTimeout(timer);
         }
     }, [notification.message]);
