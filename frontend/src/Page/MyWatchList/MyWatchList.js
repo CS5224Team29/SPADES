@@ -5,6 +5,7 @@ import { deleteWatchList, fetchWatchList } from '../../Services/watchListing';
 import { useDispatch, useSelector } from 'react-redux';
 import { setWatchlist } from '../../Redux/watchlist/watchlistSlice';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import Notification from '../../Components/Notification/Notification';
 
 
 const MyWatchList = () => {
@@ -15,25 +16,40 @@ const MyWatchList = () => {
     const watchlist = useSelector((state) => state.watchlist.watchlist);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [notification, setNotification] = useState({ message: '', type: '' });
+
 
     console.log({ userId });
 
-    // useEffect(() => {
-    //     const fetchInitialWatchlistData = async () => {
-    //         try {
-    //             setIsLoading(true);
-    //             const initialWatchlist = await fetchWatchList({ user_id: userId });
-    //             if (initialWatchlist) {
-    //                 dispatch(setWatchlist(initialWatchlist));
-    //             }
-    //             setIsLoading(false);
-    //         } catch (error) {
-    //             console.error("Error fetching watchlist data:", error);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchInitialWatchlistData = async () => {
+            try {
+                setIsLoading(true);
+                const initialWatchlist = await fetchWatchList({ user_id: userId });
+                if (initialWatchlist) {
+                    dispatch(setWatchlist(initialWatchlist));
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching watchlist data:", error);
+            }
+        };
 
-    //     fetchInitialWatchlistData();
-    // }, [userId, dispatch]);
+        fetchInitialWatchlistData();
+    }, [userId, dispatch]);
+
+    useEffect(() => {
+        if (notification.message !== '') {
+            // 设置定时器让通知在2秒后消失
+            const timer = setTimeout(() => {
+                setNotification({ message: '', type: '' }); // 清空通知
+            }, 2000);
+
+            // 清理函数
+            return () => clearTimeout(timer);
+        }
+    }, [notification.message]);
+
 
 
 
@@ -45,6 +61,7 @@ const MyWatchList = () => {
             if (response) {
                 const updatedWatchlist = watchlist.filter(stock => stock.id !== row.id);
                 dispatch(setWatchlist(updatedWatchlist));
+                setNotification({ message: 'Delete from watchlist successfully', type: 'success' });
             }
             setIsLoading(false);
         } catch (error) {
@@ -63,6 +80,7 @@ const MyWatchList = () => {
 
     return (
         <>
+            <Notification message={notification.message} type={notification.type} />
             {!isLoading ? (
                 watchlist ? (
                     <CustomTable

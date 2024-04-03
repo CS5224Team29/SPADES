@@ -9,6 +9,7 @@ import { setUserId } from '../../Redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { setWatchlist } from '../../Redux/watchlist/watchlistSlice';
 import { setCurrentSector, setSectorStockList } from '../../Redux/sector/sectorSlice';
+import Notification from '../../Components/Notification/Notification';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -25,9 +26,8 @@ const Dashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [stocks, setStocks] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    useEffect(() => {
-        console.log("Watchlist has updated", watchlist);
-    }, [watchlist]);
+    const [notification, setNotification] = useState({ message: '', type: '' });
+
 
 
 
@@ -64,6 +64,19 @@ const Dashboard = () => {
             setStocks(sectorStockList[currentSector]);
         }
     }, [dispatch, currentSector, sectorStockList]);
+
+    useEffect(() => {
+        if (notification.message !== '') {
+            // 设置定时器让通知在2秒后消失
+            const timer = setTimeout(() => {
+                setNotification({ message: '', type: '' }); // 清空通知
+            }, 2000);
+
+            // 清理函数
+            return () => clearTimeout(timer);
+        }
+    }, [notification.message]);
+
 
     useEffect(() => {
         const fetchInitialWatchlistData = async () => {
@@ -110,11 +123,13 @@ const Dashboard = () => {
         const response = await addToWatchList({ user_id: userId, stock_id: row.id });
         if (response) {
             const newStockData = row;
-            console.log({ row })
+            console.log({ row });
             dispatch(setWatchlist([...watchlist, newStockData]));
-            console.log("after adding", watchlist)
+            setNotification({ message: 'Added to watchlist successfully', type: 'success' });
+            console.log("after adding", watchlist);
         }
     };
+
 
     const handleDetail = (row) => {
         navigate(`/stocks?id=${row.id}`);
@@ -158,6 +173,7 @@ const Dashboard = () => {
 
     return (
         <Box sx={{ display: 'flex', pt: '30px' }}>
+            <Notification message={notification.message} type={notification.type} />
             <Drawer
                 variant="permanent"
                 anchor="left"
