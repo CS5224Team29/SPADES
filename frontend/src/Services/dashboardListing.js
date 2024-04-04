@@ -40,7 +40,7 @@ export async function searchStock(props) {
             },
         });
 
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error("Failed to search stock:", error);
         return null;

@@ -151,29 +151,27 @@ const Dashboard = () => {
     const handleSearch = async () => {
         setIsLoading(true);
         const newStock = await searchStock({ searchText: searchTerm });
+
         if (newStock) {
             setStocks(newStock);
-            setCurrentSector(newStock.sector)
             setIsLoading(false)
         }
 
     }
 
-    const handleClean = async (sector) => {
+    const handleClean = async () => {
         setSearchTerm('');
-
-        setCurrentSector(sector);
-        if (!sectorStockList[sector].length > 0) {
+        if (currentSector && !sectorStockList[currentSector].length > 0) {
             setIsLoading(true);
-            const newStocks = await fetchStocksBySector({ sector });
+            const newStocks = await fetchStocksBySector({ currentSector });
             if (newStocks) {
-                setSectorStockList(newStocks);
+                dispatch(setSectorStockList(newStocks));
                 setStocks(newStocks);
                 setIsLoading(false);
             }
 
         } else {
-            setStocks(sectorStockList[sector]);
+            setStocks(sectorStockList[currentSector]);
         }
 
 
