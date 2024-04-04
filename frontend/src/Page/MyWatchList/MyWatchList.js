@@ -19,22 +19,22 @@ const MyWatchList = () => {
 
 
 
-    useEffect(() => {
-        const fetchInitialWatchlistData = async () => {
-            try {
-                setIsLoading(true);
-                const initialWatchlist = await fetchWatchList({ user_id: userId });
-                if (initialWatchlist) {
-                    dispatch(setWatchlist(initialWatchlist));
-                }
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Error fetching watchlist data:", error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchInitialWatchlistData = async () => {
+    //         try {
+    //             setIsLoading(true);
+    //             const initialWatchlist = await fetchWatchList({ user_id: userId });
+    //             if (initialWatchlist) {
+    //                 dispatch(setWatchlist(initialWatchlist));
+    //             }
+    //             setIsLoading(false);
+    //         } catch (error) {
+    //             console.error("Error fetching watchlist data:", error);
+    //         }
+    //     };
 
-        fetchInitialWatchlistData();
-    }, [userId, dispatch]);
+    //     fetchInitialWatchlistData();
+    // }, [userId, dispatch]);
 
     useEffect(() => {
         if (notification.message !== '') {
