@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { SIGNIN_URL } from '../../Utils/Parameter';
+import { Box, CircularProgress } from '@mui/material';
 
 
 const Logout = () => {
@@ -10,7 +11,18 @@ const Logout = () => {
         window.location.href = SIGNIN_URL;
     }, []);
 
-    return null;
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '20vh',
+            }}
+        >
+            <CircularProgress />
+        </Box>
+    );
 };
 
 export default Logout;
