@@ -30,16 +30,24 @@ const Dashboard = () => {
 
 
 
+
     useEffect(() => {
         const fetchUserData = async () => {
             const searchParams = new URLSearchParams(window.location.search);
             const code = searchParams.get('code');
+
             if (code) {
                 const user_id = await fetchUserInfo({ code });
                 if (user_id) {
+                    sessionStorage.setItem('userId', user_id);
+                    localStorage.setItem('userId', user_id);
                     dispatch(setUserId(user_id));
+                }
+            } else {
 
-
+                const user_id = sessionStorage.getItem('userId') || localStorage.getItem('userId');
+                if (user_id) {
+                    dispatch(setUserId(user_id));
                 }
             }
         };
