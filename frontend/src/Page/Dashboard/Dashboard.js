@@ -86,25 +86,25 @@ const Dashboard = () => {
     }, [notification.message]);
 
 
-    useEffect(() => {
-        const fetchInitialWatchlistData = async () => {
-            try {
-                if (userId) {
-                    setIsLoading(true);
-                    const initialWatchlist = await fetchWatchList({ user_id: userId });
-                    if (initialWatchlist) {
-                        dispatch(setWatchlist(initialWatchlist));
-                    }
-                    setIsLoading(false);
-                }
+    // useEffect(() => {
+    //     const fetchInitialWatchlistData = async () => {
+    //         try {
+    //             if (userId) {
+    //                 setIsLoading(true);
+    //                 const initialWatchlist = await fetchWatchList({ user_id: userId });
+    //                 if (initialWatchlist) {
+    //                     dispatch(setWatchlist(initialWatchlist));
+    //                 }
+    //                 setIsLoading(false);
+    //             }
 
-            } catch (error) {
-                console.error("Error fetching watchlist data:", error);
-            }
-        };
+    //         } catch (error) {
+    //             console.error("Error fetching watchlist data:", error);
+    //         }
+    //     };
 
-        fetchInitialWatchlistData();
-    }, [userId, dispatch]);
+    //     fetchInitialWatchlistData();
+    // }, [userId, dispatch]);
 
     const handleSelectSector = async (sector) => {
 

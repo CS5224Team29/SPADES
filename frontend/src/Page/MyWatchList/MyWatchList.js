@@ -14,27 +14,27 @@ const MyWatchList = () => {
     const columns = useSelector((state) => state.sector.columns);
     const watchlist = useSelector((state) => state.watchlist.watchlist);
     const dispatch = useDispatch();
-    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState({ message: '', type: '' });
 
 
 
-    // useEffect(() => {
-    //     const fetchInitialWatchlistData = async () => {
-    //         try {
-    //             setIsLoading(true);
-    //             const initialWatchlist = await fetchWatchList({ user_id: userId });
-    //             if (initialWatchlist) {
-    //                 dispatch(setWatchlist(initialWatchlist));
-    //             }
-    //             setIsLoading(false);
-    //         } catch (error) {
-    //             console.error("Error fetching watchlist data:", error);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchInitialWatchlistData = async () => {
+            try {
+                setLoading(true);
+                const initialWatchlist = await fetchWatchList({ user_id: userId });
+                if (initialWatchlist) {
+                    dispatch(setWatchlist(initialWatchlist));
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching watchlist data:", error);
+            }
+        };
 
-    //     fetchInitialWatchlistData();
-    // }, [userId, dispatch]);
+        fetchInitialWatchlistData();
+    }, [userId, dispatch]);
 
     useEffect(() => {
         if (notification.message !== '') {
@@ -51,14 +51,14 @@ const MyWatchList = () => {
     const handleDelete = async (row) => {
 
         try {
-            setIsLoading(true);
+            setLoading(true);
             const response = await deleteWatchList({ user_id: userId, stock_id: row.id });
             if (response) {
                 const updatedWatchlist = watchlist.filter(stock => stock.id !== row.id);
                 dispatch(setWatchlist(updatedWatchlist));
                 setNotification({ message: 'Delete from watchlist successfully', type: 'success' });
             }
-            setIsLoading(false);
+            setLoading(false);
         } catch (error) {
             console.error("Error deleting stock from watchlist:", error);
         }
@@ -76,7 +76,7 @@ const MyWatchList = () => {
     return (
         <>
             <Notification message={notification.message} type={notification.type} />
-            {!isLoading ? (
+            {!loading ? (
                 watchlist ? (
                     <CustomTable
                         columns={columns}

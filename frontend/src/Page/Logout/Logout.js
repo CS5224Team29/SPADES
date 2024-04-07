@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+
+import React, { useEffect } from 'react';
 import { SIGNIN_URL } from '../../Utils/Parameter';
 import { Box, CircularProgress } from '@mui/material';
 
