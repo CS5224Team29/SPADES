@@ -1,7 +1,8 @@
 ## Python script for predicting next-day stock price
 ## Usage: python3 predict.py <stock_ticker>
-## Return an updated pd with predicted data
-## Use Yahoo finance API to retrieve historical prices (internet requried) 
+## Return json format data with the predicted close price appeneded to the one-year data
+## Using Yahoo finance API to retrieve historical prices (internet requried) 
+
 ## Author: Raymond LUO
 ## Date: 2024 MAR 23
 
@@ -9,6 +10,8 @@ import sys
 import pandas as pd
 import numpy as np
 import yfinance as yf
+import json
+from datetime import datetime, timedelta
 
 # from pandas_datareader.data import DataReader
 
@@ -106,7 +109,7 @@ def predict_stock_price(symbol):
     train = df_close[:training_data_len]
     valid = df_close[training_data_len:]
     valid['Predictions'] = predictions
-    print(valid)
+    #print(valid)
 
     # Extend testing data for one more day
     last_60_points = scaled_data[-60:]
@@ -121,10 +124,46 @@ def predict_stock_price(symbol):
     # Add the predicted price to the original dataframe
     next_day_close = next_day_prediction[0][0]
     next_day_date = stock.index[-1] + pd.Timedelta(days=1)
-    next_day_data = pd.DataFrame({'Close': [next_day_close]}, index=[next_day_date])
-    updated_df_close = df_close._append(next_day_data)
+    #next_day_data = pd.DataFrame({'Close': [next_day_close]}, index=[next_day_date])
+    #updated_df_close = df_close._append(next_day_data)
 
-    return updated_df_close
+    # Prepare the data in the specified JSON format
+    stock_data = []
+    for index, row in stock.iterrows():
+        data = {
+            "date": index.strftime('%Y-%m-%d'),
+            "open": round(row['Open'], 2),
+            "high": round(row['High'], 2),
+            "low": round(row['Low'], 2),
+            "close": round(row['Close'], 2),
+            "volume_ltc": round(row['Volume'], 2),  # Assuming 'Volume' represents volume in LTC (Litecoin)
+            "volume_usd": round(row['Volume'] * row['Close'], 2)  # Volume in USD
+        }
+        stock_data.append(data)
+    #print(stock_data)
+
+    predict_data = {
+            "date": next_day_date.strftime('%Y-%m-%d'),
+            "open": stock_data[-1]['close'],
+            "high": round(next_day_close, 2),
+            "low": round(next_day_close, 2),
+            "close": round(next_day_close, 2),
+            "volume_ltc": 0.0,  # Placeholder for volume in LTC
+            "volume_usd": 0.0   # Placeholder for volume in USD
+    }
+    #print(predict_data)
+    stock_data.append(predict_data)
+
+    # Convert all float32 values to float for JSON serialization
+    def convert_float(obj):
+        if isinstance(obj, np.float32):
+            return float(obj)
+        return obj
+
+    # Convert to JSON format with proper float conversion
+    json_data = json.dumps(stock_data, default=convert_float, indent=2)
+
+    return json_data
 
 # Main function
 def main():
@@ -133,8 +172,8 @@ def main():
         sys.exit(1)
 
     symbol = sys.argv[1]
-    predicted_price = predict_stock_price(symbol)
-    print(predicted_price)
+    predicted_data = predict_stock_price(symbol)
+    print(predicted_data)
 
 
 
