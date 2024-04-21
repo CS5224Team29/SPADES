@@ -16,12 +16,21 @@ from fastapi import FastAPI
 from mangum import Mangum
 from fastapi.responses import JSONResponse
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 # symbol = 'NVDA'  # Replace with your stock symbol
 period = "1y"
 
 app = FastAPI()
 handler = Mangum(app)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with the specific origins you want to allow
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/predict")
@@ -163,9 +172,9 @@ def predict_stock_price(symbol):
         return obj
 
     # Convert to JSON format with proper float conversion
-    json_data = json.dumps(stock_data, default=convert_float, indent=2)
+    # json_data = json.dumps(stock_data, default=convert_float, indent=2)
 
-    return {"data": json_data}
+    return {"data": stock_data}
 
 
 @app.post("/stock-data")
