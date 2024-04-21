@@ -5,6 +5,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { LOGOUT_URL } from '../../Utils/Parameter';
+import icon from '../../Assets/icon.png';
 
 const Navigation = () => {
     const navigate = useNavigate();
@@ -38,7 +39,17 @@ const Navigation = () => {
 
     return (
         <AppBar position="static" sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: '0 1rem', backgroundColor: 'white' }}>
-            <Typography variant="h6" noWrap component="div" sx={{ cursor: 'pointer', color: "black", fontWeight: "bold" }} onClick={() => navigate('/dashboard')}>
+            <Typography variant="h6" noWrap component="div" sx={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                color: 'black',
+                fontWeight: 'bold'
+            }} onClick={() => navigate('/dashboard')}>
+                <img src={icon} alt="SPADES Icon" style={{
+                    marginRight: 8, width: '30px',
+                    height: '30px'
+                }} />
                 SPADES
             </Typography>
             <Tabs
