@@ -170,10 +170,18 @@ def predict_stock_price(symbol):
             return float(obj)
         return obj
 
-    # Convert to JSON format with proper float conversion
-    json_data = json.dumps(stock_data, default=convert_float, indent=2)
+    # for x in stock_data:
+    #     for y in x:
+    #         if isinstance(x[y], np.float32):
+    #             x[y] = float(x[y])
+    for x in predict_data:
+        if isinstance(predict_data[x], np.float32):
+            predict_data[x] = float(predict_data[x])
 
-    return {"data": json_data}
+    # Convert to JSON format with proper float conversion
+    # json_data = json.dumps(stock_data, default=convert_float, indent=2)
+
+    return {"data": predict_data}
 
 
 @app.post("/stock-data")
