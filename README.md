@@ -49,16 +49,27 @@ SPADES is a cloud-native SaaS application designed for stock market analysis and
 3.1. Create an instance, make sure it allows traffic from SSH and HTTP<br>
 3.2. Set up environment according to requirements.txt, so that all required libraries (like yfinance, fastapi, tensorflow, sklearn) are ready<br>
 3.3. Install nginx to setup the server<br>
-3.4. Configure nginx with:<br>
-        ```
-        server {
-                listen 80;
-                server_name ec2_public_ip;
-                location / {
-                        proxy_pass http://127.0.0.1:8000;
-                }
-        }
-        ```<br>
-3.5. Run ```sudo service nginx restart```<br>
-3.6. Start and keep prediction.py script to keep web server running to accept API requests by calling ```python3 -m uvicorn prediction:app```<br>
-3.7. Change the frontend url to the EC2 public IP
+3.4. Create the self-signed SSL certificate in /etc/nginx/ssl with this command:<br>
+     ```
+     sudo openssl req -batch -x509 -nodes -days 365 \
+     -newkey rsa:2048 \
+     -keyout /etc/nginx/ssl/server.key \
+     -out /etc/nginx/ssl/server.crt
+     ```
+     3.5. Configure nginx with:<br>
+          ```
+          server {
+               listen 80;
+               listen 443 ssl;
+               ssl on;
+               ssl_certificate /etc/nginx/ssl/server.crt;
+               ssl_certificate_key /etc/nginx/ssl/server.key;
+               server_name ec2_public_ip;
+               location / {
+                    proxy_pass http://127.0.0.1:8000;
+               }
+          }
+          ```<br>
+     3.6. Run ```sudo service nginx restart```<br>
+     3.7. Start and keep prediction.py script to keep web server running to accept API requests by calling ```python3 -m uvicorn prediction:app```<br>
+     3.8. Change the frontend url to https://your_ec2_public_ip
