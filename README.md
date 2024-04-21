@@ -19,11 +19,11 @@ prediction.py: Module for stock price prediction using machine learning models.
 
 2. FaaS: AWS lambda functions were created for the following functions:
 
-a. Upload required files to S3 (Dockerfile, requirements.txt, and python scripts)
-b. Build docker image with the files
-c. Push the docker image to Amazon ECR
-d. Create a lambda function using the doker image
-e. Enable the function URL after the lambda function is created
+a. Upload required files to S3 (Dockerfile, requirements.txt, and python scripts)<br>
+b. Build docker image with the files<br>
+c. Push the docker image to Amazon ECR<br>
+d. Create a lambda function using the docker image<br>
+e. Enable the function URL after the lambda function is created<br>
 
 3. Deploy EC2 instance to host the prediction.py
 
