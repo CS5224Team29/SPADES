@@ -1,20 +1,20 @@
 import { axiosStockInstance } from "../Utils/axiosStockInstance";
 
-export async function fetchStocksBySector(props) {
+export async function fetchStocksBySymbol(props) {
     try {
-        const { sector } = props;
+        const { symbol } = props;
 
         if (!sector) {
             throw new Error("No sector provided");
         }
 
-        const response = await axiosStockInstance.get(`/stock-data?sector=${sector}`, {
+        const response = await axiosStockInstance.post(`/stock-data??symbol=${symbol}`, {
             headers: {
                 "Content-Type": "application/json",
             },
         });
 
-
+        console.log("response.data.data", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("Failed to fetch stocks by sector:", error);
