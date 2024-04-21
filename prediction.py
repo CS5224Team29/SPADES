@@ -16,12 +16,20 @@ from fastapi import FastAPI
 from mangum import Mangum
 from fastapi.responses import JSONResponse
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 # symbol = 'NVDA'  # Replace with your stock symbol
 period = "1y"
 
 app = FastAPI()
 handler = Mangum(app)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with the specific origins you want to allow
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+)
 
 
 @app.post("/predict")
