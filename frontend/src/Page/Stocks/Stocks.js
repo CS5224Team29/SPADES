@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import CanvasJSReact from '@canvasjs/react-stockcharts';
-import { fetchStocksBySymbol } from '../../Services/stocks';
-
+import { fetchStocksBySymbol, predictStocksBySymbol } from '../../Services/stocks';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -10,67 +10,113 @@ const Stocks = () => {
 
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [load, setLoad] = useState(false);
   const [dataPoints1, setDataPoints1] = useState([]);
   const [dataPoints2, setDataPoints2] = useState([]);
   const [dataPoints3, setDataPoints3] = useState([]);
+  const [Symbol, setSymbol] = useState(null)
 
-
-
+  const [predictData, setPredictData] = useState([]);
 
 
   useEffect(() => {
-    const fetchInitialWatchlistData = async () => {
+    const fetchInitialStockData = async () => {
       const searchParams = new URLSearchParams(window.location.search);
       const symbol = searchParams.get('id');
-      try {
+      setSymbol(symbol);
 
-        const initialStocks = await fetchStocksBySymbol({ symbol: symbol });
-        if (initialStocks) {
-          console.log({ initialStocks })
+      if (symbol) {
+        try {
+          const data = await fetchStocksBySymbol({ symbol: symbol });
+
+          if (data) {
+            var dps1 = [], dps2 = [], dps3 = [];
+            for (var i = 0; i < data.length; i++) {
+              dps1.push({
+                x: new Date(data[i].date),
+                y: [
+                  Number(data[i].open),
+                  Number(data[i].high),
+                  Number(data[i].low),
+                  Number(data[i].close)
+                ]
+              });
+              dps2.push({ x: new Date(data[i].date), y: Number(data[i].volume_usd) });
+              dps3.push({ x: new Date(data[i].date), y: Number(data[i].close) });
+            }
+
+            setDataPoints1(dps1);
+            setDataPoints2(dps2);
+            setDataPoints3(dps3);
+
+          }
+          setIsLoaded(true);
+
+        } catch (error) {
+          console.error("Error fetching stock data:", error);
         }
+        try {
+          const data = await predictStocksBySymbol({ symbol: symbol });
+          if (data) {
+            const predictData = data[data.length - 1];
+            setPredictData(predictData)
+            setLoad(true)
+          }
+        } catch (error) {
+          console.error("Error fetching predict data:", error);
+        }
+      } else {
+        fetch("https://canvasjs.com/data/docs/ltcusd2018.json")
+          .then(res => res.json())
+          .then(
+            (data) => {
 
-      } catch (error) {
-        console.error("Error fetching watchlist data:", error);
+              var dps1 = [], dps2 = [], dps3 = [];
+              for (var i = 0; i < data.length; i++) {
+                dps1.push({
+                  x: new Date(data[i].date),
+                  y: [
+                    Number(data[i].open),
+                    Number(data[i].high),
+                    Number(data[i].low),
+                    Number(data[i].close)
+                  ]
+                });
+                dps2.push({ x: new Date(data[i].date), y: Number(data[i].volume_usd) });
+                dps3.push({ x: new Date(data[i].date), y: Number(data[i].close) });
+              }
+
+              setDataPoints1(dps1);
+              setDataPoints2(dps2);
+              setDataPoints3(dps3);
+              setIsLoaded(true);
+            }
+          )
+        try {
+          const data = await predictStocksBySymbol({ symbol: "AAPL" });
+          if (data) {
+            const predictData = data[data.length - 1];
+            setPredictData(predictData)
+            setLoad(true)
+          }
+        } catch (error) {
+          console.error("Error fetching predict data:", error);
+        }
       }
+
     };
 
-    fetchInitialWatchlistData();
-  }, []);
+    fetchInitialStockData();
+  }, [setSymbol, setPredictData]);
 
 
 
-  useEffect(() => {
-    fetch("https://canvasjs.com/data/docs/ltcusd2018.json")
-      .then(res => res.json())
-      .then(
-        (data) => {
-          var dps1 = [], dps2 = [], dps3 = [];
-          for (var i = 0; i < data.length; i++) {
-            dps1.push({
-              x: new Date(data[i].date),
-              y: [
-                Number(data[i].open),
-                Number(data[i].high),
-                Number(data[i].low),
-                Number(data[i].close)
-              ]
-            });
-            dps2.push({ x: new Date(data[i].date), y: Number(data[i].volume_usd) });
-            dps3.push({ x: new Date(data[i].date), y: Number(data[i].close) });
-          }
 
-          setDataPoints1(dps1);
-          setDataPoints2(dps2);
-          setDataPoints3(dps3);
-          setIsLoaded(true);
-        }
-      )
-  }, []);
 
   const options = {
     theme: "light2",
     title: {
-      text: "AAPL:US"
+      text: `${Symbol ? Symbol : "AAPL"}`
     },
     subtitles: [{
       text: "Price-Volume Trend"
@@ -137,6 +183,7 @@ const Stocks = () => {
       }
     }
   };
+
   const containerProps = {
     width: "100%",
     height: "450px",
@@ -144,15 +191,65 @@ const Stocks = () => {
   };
 
   return (
-    <div>
-      <CanvasJSStockChart
-        options={options}
-        containerProps={containerProps}
+    <>
+      {isLoaded ? (
+        <>
+          <CanvasJSStockChart
+            options={options}
+            containerProps={containerProps}
 
-      />
-    </div>
+          />
+        </>
+
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '20vh',
+          }}
+        >
+          <CircularProgress />
+        </Box >
+      )}
+
+      {load ? (
+        <Box sx={{
+          flexGrow: 1, p: 3, display: 'flex',
+          justifyContent: "center",
+          alignItems: 'center'
+        }}>
+          <Typography variant="h6" noWrap>
+            Predict Price On Next Day: {predictData.close}
+          </Typography>
+        </Box>
+
+
+      ) : (
+        <Box sx={{
+          flexGrow: 1, p: 3, display: 'flex',
+          justifyContent: "center",
+          alignItems: 'center',
+        }}>
+          <Typography variant="h6" noWrap>
+            Predict Price On Next Day:
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: "center",
+                alignItems: 'center',
+                height: '20vh',
+              }}
+            >
+              <CircularProgress />
+            </Box >
+          </Typography>
+        </Box>
+
+      )}
+    </>
   );
-};
+}
 
-//onRef={ref => this.stockChart = ref}
 export default Stocks;
