@@ -14,3 +14,4 @@ export const SIGNIN_URL = `https://spades.auth.us-east-1.amazoncognito.com/oauth
 export const CLIENT_ID = `4l27f32rcgmkkh51eu23g7ormr`;
 export const CLIENT_SECRET = `9mqr5b18ri5513eh1bmjqjj8qcqs9gje22hv2d8058uudd6ok59`;
 
+
