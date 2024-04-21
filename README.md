@@ -11,7 +11,30 @@ SPADES is a cloud-native SaaS application designed for stock market analysis and
 
 ### Deployment Overview
 1. Frontend deployment: configure AWS Amplify to auto pulling the dev branch of this GitHub repo and deploy as a web app.
-
+1.1. Push frontend code on github
+1.2. Go to AWS Amplify, select "Amplify Hosting"
+1.3. Choose "Github" as source of "From your existing code"
+1.4. Select Repository and branch at "Add repository branch".
+1.5. Edit build settings as below:
+        version: 1
+        frontend:
+          phases:
+            preBuild:
+              commands:
+                - cd frontend # Navigate into the React app directory
+                - npm install
+            build:
+              commands:
+                - npm run build
+          artifacts:
+            baseDirectory: frontend/build  # Adjust according to your React app's build output directory
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - frontend/node_modules/**/* # Cache the node_modules in the React app directory
+1.6. Click "Save and Build", AWS will start to provision resource, build and deploy the application.
+   
 2. FaaS: AWS lambda functions were created with the following steps:<br>
 2.1. Upload required files to S3 (Dockerfile, requirements.txt, and python scripts)<br>
 2.2. Build docker image with the files<br>
