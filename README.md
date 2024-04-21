@@ -26,10 +26,10 @@ d. Create a lambda function using the docker image<br>
 e. Enable the function URL after the lambda function is created<br>
 
 3. Deploy EC2 instance to host the prediction.py
-
-3.1. Set up environment according to requirements.txt, so that all required libraries (like yfinance, fastapi, tensorflow, sklearn) are ready <br>
-3.2. Install nginx to setup the server<br>
-3.3. Configure nginx with<br>
+3.1. Create an instance, make sure it allows traffic from SSH and HTTP
+3.2. Set up environment according to requirements.txt, so that all required libraries (like yfinance, fastapi, tensorflow, sklearn) are ready <br>
+3.3. Install nginx to setup the server<br>
+3.4. Configure nginx with<br>
 ```
 server {
         listen 80;
@@ -39,7 +39,6 @@ server {
         }
 }
 ```
-3.4. Run ```sudo service nginx restart```<br>
-3.5. Start and keep prediction.py script to keep web server running to accept API requests by calling ```python3 -m uvicorn prediction:app```<br>
-
-4. 
+3.5. Run ```sudo service nginx restart```<br>
+3.6. Start and keep prediction.py script to keep web server running to accept API requests by calling ```python3 -m uvicorn prediction:app```<br>
+3.7. Change the frontend url to the EC2 public IP
