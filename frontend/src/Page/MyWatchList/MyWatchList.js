@@ -69,7 +69,7 @@ const MyWatchList = () => {
 
     const handleDetail = (row) => {
 
-        navigate(`/stocks?id=${row.id}`);
+        navigate(`/stocks?id=${row.symbol}`);
     };
 
 
