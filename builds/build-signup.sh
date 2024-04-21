@@ -1,0 +1,1 @@
+docker build -f docker/Dockerfile-signup --platform=linux/amd64 -t spade-signup .
