@@ -1,14 +1,14 @@
-import { axiosStockInstance } from "../Utils/axiosStockInstance";
+import { axiosStockInstance } from "../Utils/AxiosInstance";
 
 export async function fetchStocksBySymbol(props) {
     try {
         const { symbol } = props;
 
-        if (!sector) {
+        if (!symbol) {
             throw new Error("No sector provided");
         }
 
-        const response = await axiosStockInstance.post(`/stock-data??symbol=${symbol}`, {
+        const response = await axiosStockInstance.post(`/stock-data?symbol=${symbol}`, {
             headers: {
                 "Content-Type": "application/json",
             },
