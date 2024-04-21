@@ -1,4 +1,7 @@
 # SPADES (Stock Prediction and Automated Dashboard for Economic Success)
+
+https://github.com/CS5224Team29/SPADES
+
 CS5224 group project
 
 Team 29: Zuo Yue, Putri Darmawan, Luo Ming, Tian Wenle
