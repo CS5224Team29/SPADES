@@ -1,5 +1,6 @@
 export const COGNITO_BASE_URL = `https://spades.auth.us-east-1.amazoncognito.com/`;
 export const GATEWAY_BASE_URL = `https://kpkxx6puy7h4st72awjuaxm2di0xlbnq.lambda-url.us-east-1.on.aws`;
+export const HTTP_BASE_URL = `http://54.163.243.174`;
 
 const AMPLIFY_BASE_URL = `https://dev.dzym427ke4wx7.amplifyapp.com`;
 const LOCALHOST_BASE_URL = `http://localhost:3000`;
